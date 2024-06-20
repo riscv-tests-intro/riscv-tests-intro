@@ -5,8 +5,8 @@
   - [Общие зависимости](#общие-зависимости)
   - [Генератор случайных инструкций RISC-V AAPG `2d7d40f`](#генератор-случайных-инструкций-risc-v-aapg-2d7d40f)
   - [ПО riscv-gnu-toolchain `6d7b5b7`](#по-riscv-gnu-toolchain-6d7b5b7)
-  - [Симулятор RISC-V Spike ISS `00dfa28`](#симулятор-risc-v-spike-iss-00dfa28)
-  - [`522bead`](#522bead)
+  - [Программная модель RISC-V Spike ISS `00dfa28`](#программная-модель-risc-v-spike-iss-00dfa28)
+  - [Verilator 5.024 `522bead`](#verilator-5024-522bead)
   - [GTKWave](#gtkwave)
   - [Завершение установки](#завершение-установки)
 
@@ -93,7 +93,7 @@ echo "PATH=$INSTALL_DIR/riscv-gnu-toolchain/bin"':$PATH' >> ~/.profile
 source ~/.profile
 ```
 
-## Симулятор RISC-V Spike ISS `00dfa28`
+## Программная модель RISC-V Spike ISS `00dfa28`
 
 Переходим в директорию и устанавливаем зависимости:
 
@@ -141,7 +141,7 @@ echo "PATH=$INSTALL_DIR/spike/bin"':$PATH' >> ~/.profile
 source ~/.profile
 ```
 
-##  `522bead`
+## Verilator 5.024 `522bead`
 
 Переходим в директорию и устанавливаем зависимости:
 
