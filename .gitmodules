@@ -1,0 +1,30 @@
+[submodule "MIRISCV"]
+	path = submodules/MIRISCV
+	url = https://github.com/MPSU/MIRISCV.git
+[submodule "ibex"]
+	path = submodules/ibex
+	url = https://github.com/lowRISC/ibex.git
+[submodule "riscv-ctg"]
+	path = submodules/riscv-ctg
+	url = https://github.com/riscv-software-src/riscv-ctg.git
+[submodule "riscv-tests"]
+	path = submodules/riscv-tests
+	url = https://github.com/riscv-software-src/riscv-tests.git
+[submodule "submodules/riscv-gnu-toolchain"]
+	path = submodules/riscv-gnu-toolchain
+	url = https://github.com/riscv/riscv-gnu-toolchain
+[submodule "submodules/riscv-isa-sim"]
+	path = submodules/riscv-isa-sim
+	url = https://github.com/riscv-software-src/riscv-isa-sim.git
+[submodule "submodules/verilator"]
+	path = submodules/verilator
+	url = https://github.com/verilator/verilator
+[submodule "submodules/aapg"]
+	path = submodules/aapg
+	url = https://gitlab.com/shaktiproject/tools/aapg.git
+[submodule "submodules/riscv-tests-miriscv"]
+	path = submodules/riscv-tests-miriscv
+	url = https://github.com/riscv-tests-intro/riscv-tests.git
+[submodule "submodules/aapg-miriscv"]
+	path = submodules/aapg-miriscv
+	url = https://github.com/riscv-tests-intro/aapg.git
