@@ -2264,9 +2264,9 @@ print(compare_result)
 Закроем файл `compare.py` и выполним команду:
 
 ```bash
-PYTHONPATH=../../../../submodules/ibex/dv/uvm/core_ibex/riscv_dv_extension:$PYTHONPATH \
-PYTHONPATH=../../../../submodules/ibex/vendor/google_riscv-dv/scripts:$PYTHONPATH \
-PYTHONPATH=../../../../submodules/ibex/dv/uvm/core_ibex/scripts:$PYTHONPATH \
+PYTHONPATH=../../../submodules/ibex/dv/uvm/core_ibex/riscv_dv_extension:$PYTHONPATH \
+PYTHONPATH=../../../submodules/ibex/vendor/google_riscv-dv/scripts:$PYTHONPATH \
+PYTHONPATH=../../../submodules/ibex/dv/uvm/core_ibex/scripts:$PYTHONPATH \
 python3 compare.py --rtl_log=out/verilator/rtl_log_00000000.log --iss_log=out/spike/iss_log.log --out=out/compare.log
 ```
 
@@ -2291,7 +2291,7 @@ python3 compare.py --rtl_log=out/verilator/rtl_log_00000000.log --iss_log=out/sp
 
 
 ```bash
-gedit ../../submodules/MIRISCV/miriscv/rtl/miriscv_alu.sv
+gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_alu.sv
 ```
 
 Заменим строчку
@@ -2354,9 +2354,9 @@ out/verilator/Vmiriscv_tb_top +bin=out/aapg/bin/program.bin \
 Сравнение с эталонной моделью
 
 ```bash
-PYTHONPATH=../../../../submodules/ibex/dv/uvm/core_ibex/riscv_dv_extension:$PYTHONPATH \
-PYTHONPATH=../../../../submodules/ibex/vendor/google_riscv-dv/scripts:$PYTHONPATH \
-PYTHONPATH=../../../../submodules/ibex/dv/uvm/core_ibex/scripts:$PYTHONPATH \
+PYTHONPATH=../../../submodules/ibex/dv/uvm/core_ibex/riscv_dv_extension:$PYTHONPATH \
+PYTHONPATH=../../../submodules/ibex/vendor/google_riscv-dv/scripts:$PYTHONPATH \
+PYTHONPATH=../../../submodules/ibex/dv/uvm/core_ibex/scripts:$PYTHONPATH \
 python3 compare.py --rtl_log=out/verilator/rtl_log_00000000.log --iss_log=out/spike/iss_log.log --out=out/compare.log
 ```
 
