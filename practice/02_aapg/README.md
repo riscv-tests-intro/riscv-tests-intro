@@ -1305,10 +1305,16 @@ endclass
 Создадим специализированную функцию для получения адреса завершения тестового сценария из командной строки:
 
 ```SystemVerilog
-function void get_signature_addr();
-    if(!$value$plusargs("signature_addr=%0h", signature_addr))
-        $fatal("You must provide 'signature_addr' via commandline!");
-endfunction
+class miriscv_test;
+
+    ...
+
+    function void get_signature_addr();
+        if(!$value$plusargs("signature_addr=%0h", signature_addr))
+            $fatal("You must provide 'signature_addr' via commandline!");
+    endfunction
+
+endclass
 ```
 
 Мы знаем, что в нашем случае явно определен адрес `80100000`, так что можно было бы обойтись и без специальной переменной, однако почему бы не сделать код чуть более универсальным, а при запуске симуляции просто передавать дополнительный аргумент `+signature_addr=80100000`.
@@ -1434,7 +1440,51 @@ endpackage
 
 Файл содержит ни больше, ни меньше - подключение исходного кода спроектированнных ранее компонентов окружения. Использование пакета упрощает переиспользование компонентов и уменьшает количество аргументов в ходе процесса компиляции.
 
+**Обратим внимание**, что пакет не содержит в себе подключение файла интерфейса `miriscv_mem_intf.sv`. Это специфичное ограничение языка SystemVerilog. О причинах можно почитать [по ссылке](https://stackoverflow.com/questions/25208857/defining-interface-inside-a-package).
+
+
 Закроем файл `miriscv_test_pkg.sv`.
+
+Откроем файл интерфейса `miriscv_mem_intf.sv`:
+
+```bash
+gedit miriscv_mem_intf.sv
+```
+
+**Обратим внимание** на функцию `get_bus_status()`:
+
+```SystemVerilog
+interface miriscv_mem_intf (
+    input logic clk,
+    input logic arst_n
+);
+
+    ...
+
+    function void get_bus_status (
+        miriscv_test_pkg::miriscv_mem_item t
+    );
+        t.instr_rvalid = instr_rvalid;
+        t.instr_rdata  = instr_rdata;
+        t.instr_req    = instr_req;
+        t.instr_addr   = instr_addr;
+        t.data_rvalid  = data_rvalid;
+        t.data_rdata   = data_rdata;
+        t.data_req     = data_req;
+        t.data_wdata   = data_wdata;
+        t.data_addr    = data_addr;
+        t.data_we      = data_we;
+        t.data_be      = data_be;
+    endfunction
+  
+endinterface
+```
+
+Так как пакет и интерфейс компилируются независимо, то в момент компиляции интерфейса компилятор не будет ничего "знать" про тип `miriscv_mem_item`, который был определен в пакете `miriscv_test_pkg`. Нам необходимо подсказать ему о том, где кконкретно определен этот тип через оператор глобального доступа `::`.
+
+Конструкция `miriscv_test_pkg::miriscv_mem_item t` буквально означает "определи переменную `t` типа `miriscv_mem_item`, который определен в пакете `miriscv_test_pkg`. Строго говоря выражение `miriscv_test_pkg::miriscv_mem_item` целиком является определением типа. То есть потеницально мы можем определить класс с одинаковым именем в разных пакетах, но для компилятора они будут считаться разными типами. Например, `miriscv_test_pkg_1::miriscv_mem_item` и ``miriscv_test_pkg_2::miriscv_mem_item` - разные типы. Но это уже совсем другая история.
+
+Закроем файл `miriscv_mem_intf.sv`.
 
 ### Создание главного модуля верификационного окружения `miriscv_tb_top`
 
