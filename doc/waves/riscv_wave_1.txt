@@ -1,0 +1,6 @@
+{signal: [
+  {name: 'clk_i', wave: 'p..........'},
+  {name: 'instr_data', wave: '3....4...3.', data: ["add x1, x2, x3 ", "sub x1, x2, x1", "add ..."]},
+  {name: 'instr_ready', wave: '0...10..10.'}
+]
+}
