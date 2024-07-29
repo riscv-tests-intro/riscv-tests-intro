@@ -1,6 +1,6 @@
 [submodule "MIRISCV"]
 	path = submodules/MIRISCV
-	url = https://github.com/MPSU/MIRISCV.git
+	url = https://github.com/riscv-tests-intro/MIRISCV.git
 [submodule "ibex"]
 	path = submodules/ibex
 	url = https://github.com/lowRISC/ibex.git
