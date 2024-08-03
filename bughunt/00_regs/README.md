@@ -35,7 +35,7 @@
 
 ## Краткое содержание
 
-Казалось бы, что может пойти не так при запуске простейшего ["Hello world!"](../../theory/03_func.md#hello-world) теста. Пара инструкций сложения, простое ветвление и запись результата в память. Но не все так просто! Вместе "распутываем" неочевидные взаимосвязи конвейера [MIRISCV](https://github.com/MPSU/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77) и ищем "виновника". **Занятие состоит из 3 основных этапов, выполняемых друг за другом.**
+Казалось бы, что может пойти не так при запуске простейшего ["Hello world!"](../../theory/03_func.md#hello-world) теста. Пара инструкций сложения, простое ветвление и запись результата в память. Но не все так просто! Вместе "распутываем" неочевидные взаимосвязи конвейера [MIRISCV](https://github.com/riscv-tests-intro/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77) и ищем "виновника". **Занятие состоит из 3 основных этапов, выполняемых друг за другом.**
 
 [Применение подхода "Hello world!"](#применение-подхода-hello-world) - для верификации процессорного ядра применяется подход "Hello world" Анализируются лог-файлы и временные диаграммы, а также делается вывод о некорректности исполнения программы процессорным ядром. Далее автором производится анализ RTL процессорного ядра и временных диаграмм с целью локализации ошибки. [Исправление ошибки](#исправление-ошибки) - найденная ршибка исправляется, автором приводятся обоснования внесенным изменениям. [Проверка корректности работы](#проверка-корректности-работы) - к исправленной версии ядра вновь применяется подход "Hello world!", подтверждается корректность работы.
 
@@ -61,20 +61,20 @@
 
 ## Тестируемое RISC-V ядро
 
-В рамках курса будет тестироваться учебное ядро, разработанное в НИУ МИЭТ: [MIRISCV](https://github.com/MPSU/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77). Процессор поддерживает расширения RV32I и RV32M и является четырехстадийным [in-order](https://en.wikipedia.org/wiki/Out-of-order_execution#In-order_processors) [конвейером](https://en.wikipedia.org/wiki/Instruction_pipelining). Ядро поддерживает только машинный уровень привилегий[^1].
+В рамках курса будет тестироваться учебное ядро, разработанное в НИУ МИЭТ: [MIRISCV](https://github.com/riscv-tests-intro/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77). Процессор поддерживает расширения RV32I и RV32M и является четырехстадийным [in-order](https://en.wikipedia.org/wiki/Out-of-order_execution#In-order_processors) [конвейером](https://en.wikipedia.org/wiki/Instruction_pipelining). Ядро поддерживает только машинный уровень привилегий[^1].
 
 <p align="center">
   <img src="../../doc/pic/miriscv_scheme.svg" width=600></img>
 </p>
 
-Подробную документацию на процессор можно найти по [ссылке](https://github.com/MPSU/MIRISCV/blob/b510b308addc4a7271e36f2a348bd18bf24c1d77/doc/miriscv/miriscv_scheme.md). В рамках курса его функциональные особенности подробно разбираться не будут, а необходимая для выполнения заданий информация будет даваться по ходу повествования.
+Подробную документацию на процессор можно найти по [ссылке](https://github.com/riscv-tests-intro/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77). В рамках курса его функциональные особенности подробно разбираться не будут, а необходимая для выполнения заданий информация будет даваться по ходу повествования.
 
 
 ## Подготовка
 
 **Подразумевается, что команды начинают выполняться в директории, в которой расположен данный файл с описанием занятия.**
 
-Для того, чтобы работать с определенной версией ядра [MIRISCV](https://github.com/MPSU/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77) выполните команды:
+Для того, чтобы работать с определенной версией ядра [MIRISCV](https://github.com/riscv-tests-intro/MIRISCV/tree/bug_00) выполните команды:
 
 ```bash
 cd ../../submodules/MIRISCV/
@@ -236,7 +236,7 @@ gtkwave out/verilator/run_waves.vcd
 
 Давайте погрузимся чуть глубже. Для этого обратим внимание на [микроархитектурную схему ядра](#тестируемое-risc-v-ядро). За функционал запроса инструкций отвечает модуль `fetch_unit`. Давайте отправим на временную диаграмму часть его сигналов. В иерархии переходим `TOP` -> `miriscv_tb_top` ->  `DUT` -> `i_fetch_stage` -> `fetch_unit`.
 
-И давайте сразу посмотрим на RTL данного модуля [`miriscv_fetch_unit.sv`](https://github.com/MPSU/MIRISCV/blob/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/miriscv_fetch_unit.sv). Файл можно открыть в любом редакторе. Открываем при помощи gedit:
+И давайте сразу посмотрим на RTL данного модуля [`miriscv_fetch_unit.sv`](https://github.com/riscv-tests-intro/MIRISCV/tree/bug_00/miriscv/rtl/miriscv_fetch_unit.sv). Файл можно открыть в любом редакторе. Открываем при помощи gedit:
 
 ```bash
 gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_fetch_unit.sv
@@ -261,13 +261,13 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_fetch_unit.sv
 
 Отправим данный сигнал на временную диаграмму.
 
-Обратим теперь наше внимание на модуль [`miriscv_fetch_stage.sv`](https://github.com/MPSU/MIRISCV/blob/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/miriscv_fetch_stage.sv). Файл можно открыть в любом редакторе. Открываем при помощи gedit:
+Обратим теперь наше внимание на модуль [`miriscv_fetch_stage.sv`](https://github.com/riscv-tests-intro/MIRISCV/tree/bug_00/miriscv/rtl/miriscv_fetch_stage.sv). Файл можно открыть в любом редакторе. Открываем при помощи gedit:
 
 ```bash
 gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_fetch_stage.sv
 ```
 
-В данном модуле нас интересуют сигналы `f_valid_o` и `f_instr_o`, которые формируются непосредственно из сигналов `fetch_rvalid_o` и `instr_o` модуля [`miriscv_fetch_unit.sv`](https://github.com/MPSU/MIRISCV/blob/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/miriscv_fetch_unit.sv). Эти сигналы отвечают за валидность инструкции и значение самой инструкции соответственно.
+В данном модуле нас интересуют сигналы `f_valid_o` и `f_instr_o`, которые формируются непосредственно из сигналов `fetch_rvalid_o` и `instr_o` модуля [`miriscv_fetch_unit.sv`](https://github.com/riscv-tests-intro/MIRISCV/tree/bug_00/miriscv/rtl/miriscv_fetch_unit.sv). Эти сигналы отвечают за валидность инструкции и значение самой инструкции соответственно.
 
 ```SystemVerilog
 ...
@@ -327,7 +327,7 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_fetch_stage.sv
 
 А вот и момент, когда счетчик команд перезаписывается значением 18 в шестнадцатиричном формате, что соответствует значению 24 в десятичном. А это адрес инструкции `addi x3, x0, 0`! Ветвление происходит неверно. Но почему? Давайте разбираться.
 
-Сигналы `cu_force_f_i` и `cu_force_pc_i` формируются в модуле `control_unit` (внимание на [микроархитектурную схему ядра](#тестируемое-risc-v-ядро)) - [`miriscv_control_unit.sv`](https://github.com/MPSU/MIRISCV/blob/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/miriscv_control_unit.sv)
+Сигналы `cu_force_f_i` и `cu_force_pc_i` формируются в модуле `control_unit` (внимание на [микроархитектурную схему ядра](#тестируемое-risc-v-ядро)) - [`miriscv_control_unit.sv`](https://github.com/riscv-tests-intro/MIRISCV/tree/bug_00/miriscv/rtl/miriscv_control_unit.sv)
 
 Откроем его RTL:
 
@@ -365,7 +365,7 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_control_unit.sv
 
 Поразмыслив над логикой формирования, можно сделать вывод, что данный сигнал равен 1 тогда, когда предсказание условного перехода (ветвления)[^2], сделанное на этапе декодирования (decode stage) не совпадает с реальным результатом ветвления, вычисленном на этапе выполнения (execute stage) (внимание на [микроархитектурную схему ядра](#тестируемое-risc-v-ядро)).
 
-В `control_unit` сигналы `m_prediction_i` и `m_br_j_taken_i` приходят со стадии памяти (memory). `m_prediction_i` остается неизменным при переходе между стадиями, а формируется на стадии декодирование (decode) в файле [`miriscv_decode_stage.sv`](https://github.com/MPSU/MIRISCV/blob/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/miriscv_decode_stage.sv) следующим образом:
+В `control_unit` сигналы `m_prediction_i` и `m_br_j_taken_i` приходят со стадии памяти (memory). `m_prediction_i` остается неизменным при переходе между стадиями, а формируется на стадии декодирование (decode) в файле [`miriscv_decode_stage.sv`](https://github.com/riscv-tests-intro/MIRISCV/tree/bug_00/miriscv/rtl/miriscv_decode_stage.sv) следующим образом:
 
 
 ```SystemVerilog
@@ -376,7 +376,7 @@ d_prediction_ff <= '0; // All instructions are "predicted" as not taken
 
 То есть ядро реализует простейшую статическую логику предсказания, которая предполагает отсутствие перехода в любом случае.
 
-Что же касается сигнала `m_br_j_taken_i`, то он остается неизменным со стадии выполнения (execute), а формируется в файле [`miriscv_execute_stage.sv`](https://github.com/MPSU/MIRISCV/blob/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/miriscv_execute_stage.sv) следующим образом:
+Что же касается сигнала `m_br_j_taken_i`, то он остается неизменным со стадии выполнения (execute), а формируется в файле [`miriscv_execute_stage.sv`](https://github.com/riscv-tests-intro/MIRISCV/tree/bug_00/miriscv/rtl/miriscv_execute_stage.sv) следующим образом:
 
 ```SystemVerilog
 ...
@@ -386,7 +386,7 @@ e_br_j_taken_ff  <= d_br_j_taken_i | (d_branch_i & branch_des);
 
 Поразмыслив над логикой формирования, можно сделать вывод, что данный сигнал равен 1 в том случае, если на стадии декодирования (decode) обнаружена инструкция безусловного перехода, либо если на стадии декодирования обнаружена инструкция условного перехода и на стадии выполнения (execute) условие перехода истинно.
 
-**Обратим особое внимание** на сигнал `branch_des`. Он формируется арифметико логическим устройстом (АЛУ). Подключение АЛУ представлено в модуле [`miriscv_execute_stage.sv`](https://github.com/MPSU/MIRISCV/blob/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/miriscv_execute_stage.sv):
+**Обратим особое внимание** на сигнал `branch_des`. Он формируется арифметико логическим устройстом (АЛУ). Подключение АЛУ представлено в модуле [`miriscv_execute_stage.sv`](https://github.com/riscv-tests-intro/MIRISCV/tree/bug_00/miriscv/rtl/miriscv_execute_stage.sv):
 
 ```SystemVerilog
 ...
@@ -408,9 +408,9 @@ e_br_j_taken_ff  <= d_br_j_taken_i | (d_branch_i & branch_des);
 
 ![](../../doc/pic/regs_6.png)
 
-Наблюдаем интересную картину. На АЛУ подается верная операция `beq` (кодировка определена в [`miriscv_alu_pkg.sv`](https://github.com/MPSU/MIRISCV/blob/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/include/miriscv_alu_pkg.sv)) (1). Первый операнд `d_op1_i` (2) согласно проверяемой нами инструкции ветвления `beq x1, x2, 16` находится в регистре `x1`. Это значение 5, все верно. А что же со вторым операндом `d_op2_i` (3)? Он же находится в регистре `x2` и должен быть равен 5. Кажется, мы приближаемся к разгадке.
+Наблюдаем интересную картину. На АЛУ подается верная операция `beq` (кодировка определена в [`miriscv_alu_pkg.sv`](https://github.com/riscv-tests-intro/MIRISCV/tree/bug_00/miriscv/rtl/include/miriscv_alu_pkg.sv)) (1). Первый операнд `d_op1_i` (2) согласно проверяемой нами инструкции ветвления `beq x1, x2, 16` находится в регистре `x1`. Это значение 5, все верно. А что же со вторым операндом `d_op2_i` (3)? Он же находится в регистре `x2` и должен быть равен 5. Кажется, мы приближаемся к разгадке.
 
-Операнд `d_op2_i` подключается к сигналу `d_op2_o` стадии декодирования (decode), который в свою очередь подключается к сигналу `op2`, который формируется в файле [`miriscv_decode_stage.sv`](https://github.com/MPSU/MIRISCV/blob/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/miriscv_decode_stage.sv) следующим образом:
+Операнд `d_op2_i` подключается к сигналу `d_op2_o` стадии декодирования (decode), который в свою очередь подключается к сигналу `op2`, который формируется в файле [`miriscv_decode_stage.sv`](https://github.com/riscv-tests-intro/MIRISCV/tree/bug_00/miriscv/rtl/miriscv_decode_stage.sv) следующим образом:
 
 ```SystemVerilog
 ...
@@ -431,11 +431,11 @@ e_br_j_taken_ff  <= d_br_j_taken_i | (d_branch_i & branch_des);
 
 ![](../../doc/pic/regs_7.png)
 
-Перед тем, как попасть на стадию декодирования (внимание на [микроархитектурную схему ядра](#тестируемое-risc-v-ядро)), сигнал `op2` равен 5, при этом значение `decode_ex_op2_sel` равно `RS2_DATA` (кодировка определена в [`miriscv_decode_pkg.sv`](https://github.com/MPSU/MIRISCV/blob/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/include/miriscv_decode_pkg.sv)).
+Перед тем, как попасть на стадию декодирования (внимание на [микроархитектурную схему ядра](#тестируемое-risc-v-ядро)), сигнал `op2` равен 5, при этом значение `decode_ex_op2_sel` равно `RS2_DATA` (кодировка определена в [`miriscv_decode_pkg.sv`](https://github.com/riscv-tests-intro/MIRISCV/tree/bug_00/miriscv/rtl/include/miriscv_decode_pkg.sv)).
 
 Резюмируя вышесказанное - сигнал `op2` равен 5, при этом он подключен к сигналу `r2_data`. Чему же равен сигнал `r2_data`?
 
-Откроем модуль [`miriscv_decode_stage.sv`](https://github.com/MPSU/MIRISCV/blob/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/miriscv_decode_stage.sv). Файл можно открыть в любом редакторе. Открываем при помощи gedit:
+Откроем модуль [`miriscv_decode_stage.sv`](https://github.com/riscv-tests-intro/MIRISCV/tree/bug_00/miriscv/rtl/miriscv_decode_stage.sv). Файл можно открыть в любом редакторе. Открываем при помощи gedit:
 
 ```bash
 gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_decode_stage.sv
@@ -484,7 +484,7 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_decode_stage.sv
 
 ## Исправление ошибки
 
-Откроем модуль [`miriscv_decode_stage.sv`](https://github.com/MPSU/MIRISCV/blob/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/miriscv_decode_stage.sv). Файл можно открыть в любом редакторе. Открываем при помощи gedit:
+Откроем модуль [`miriscv_decode_stage.sv`](https://github.com/riscv-tests-intro/MIRISCV/tree/bug_00/miriscv/rtl/miriscv_decode_stage.sv). Файл можно открыть в любом редакторе. Открываем при помощи gedit:
 
 ```bash
 gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_decode_stage.sv
@@ -623,7 +623,7 @@ gtkwave out/verilator/run_waves.vcd
 
 ## Выводы
 
-В ходе данного занятия к процессорному ядру [MIRISCV](https://github.com/MPSU/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77) был применен верификационный подход ["Hello world!"](../../theory/03_func.md#hello-world). Был сделан вывод о некорректности работы ядра. Ошибка была локализована и исправлена, симуляция запущена повторно, подтверждено корректное выполнение тестовой программы.
+В ходе данного занятия к процессорному ядру [MIRISCV](https://github.com/riscv-tests-intro/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77) был применен верификационный подход ["Hello world!"](../../theory/03_func.md#hello-world). Был сделан вывод о некорректности работы ядра. Ошибка была локализована и исправлена, симуляция запущена повторно, подтверждено корректное выполнение тестовой программы.
 
 [^1]: Хороший ознакомительный материал об уровнях привилегий в RISC-V расположен по [ссылке](https://danielmangum.com/posts/risc-v-bytes-privilege-levels/).
 
