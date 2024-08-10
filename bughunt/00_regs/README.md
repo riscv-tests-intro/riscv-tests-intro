@@ -246,6 +246,9 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_fetch_unit.sv
 
 ```SystemVerilog
 ...
+module miriscv_fetch_unit;
+
+  ...
 
   always_ff @(posedge clk_i or negedge arstn_i) begin
     if (~arstn_i) begin
@@ -256,7 +259,9 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_fetch_unit.sv
     end
   end
 
-...
+  ...
+
+endmodule
 ```
 
 Отправим данный сигнал на временную диаграмму.
@@ -271,6 +276,9 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_fetch_stage.sv
 
 ```SystemVerilog
 ...
+module miriscv_fetch_unit;
+
+  ...
 
   always_ff @(posedge clk_i or negedge arstn_i) begin
     if(~arstn_i)
@@ -291,7 +299,9 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_fetch_stage.sv
   ...
   assign f_valid_o = f_valid_ff;
 
-...
+  ...
+
+endmodule
 ```
 
 Взглянем теперь на временную диаграмму:
@@ -304,6 +314,9 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_fetch_stage.sv
 
 ```SystemVerilog
 ...
+module miriscv_fetch_unit;
+
+  ...
 
   always_ff @(posedge clk_i or negedge arstn_i) begin
     ...
@@ -316,7 +329,9 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_fetch_stage.sv
   assign pc_next    = cu_force_f_i ? cu_force_pc_i :
                       cu_stall_f_i ? fetched_pc_ff : pc_plus_inc;
 
-...
+  ...
+
+endmodule
 ```
 
 Давайте обратим внимание на сигналы `cu_force_f_i` и `cu_force_pc_i`. Есть подозрение, что при операциях ветвления именно они отвечают за формирование нового счетчика команд, так как в иных случаях в `next_pc` попадает либо текущий счетчик команд `fetched_pc_ff` (случай приостановки конвейера), либо адрес следуюзей инструкции `pc_plus_inc`. Отправим сигналы `cu_force_f_i` и `cu_force_pc_i` на временную диаграмму.
@@ -339,10 +354,15 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_control_unit.sv
 
 ```SystemVerilog
 ...
+module miriscv_control_unit;
+
+  ...
 
   assign cu_force_f_o = cu_boot_addr_load_en | cu_mispredict;
 
-...
+  ...
+
+endmodule
 ```
 
 Есть подозрения, что в данном случае за формирование на нем значения логической единицы в данный момент времени отвечает сигнал `cu_mispredict`. Добавим его на временную диаграмму.
@@ -353,6 +373,9 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_control_unit.sv
 
 ```SystemVerilog
 ...
+module miriscv_control_unit;
+
+  ...
 
   assign cu_mispredict = m_valid_i & (m_prediction_i ^ m_br_j_taken_i) ;
 
@@ -360,7 +383,9 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_control_unit.sv
 
   assign cu_force_f_o = cu_boot_addr_load_en | cu_mispredict;
 
-...
+  ...
+
+endmodule
 ```
 
 Поразмыслив над логикой формирования, можно сделать вывод, что данный сигнал равен 1 тогда, когда предсказание условного перехода (ветвления)[^2], сделанное на этапе декодирования (decode stage) не совпадает с реальным результатом ветвления, вычисленном на этапе выполнения (execute stage) (внимание на [микроархитектурную схему ядра](#тестируемое-risc-v-ядро)).
@@ -370,8 +395,15 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_control_unit.sv
 
 ```SystemVerilog
 ...
-d_prediction_ff <= '0; // All instructions are "predicted" as not taken
-...
+module miriscv_decode_stage;
+
+  ...
+
+  d_prediction_ff <= '0; // All instructions are "predicted" as not taken
+
+  ...
+
+endmodule
 ```
 
 То есть ядро реализует простейшую статическую логику предсказания, которая предполагает отсутствие перехода в любом случае.
@@ -380,8 +412,15 @@ d_prediction_ff <= '0; // All instructions are "predicted" as not taken
 
 ```SystemVerilog
 ...
-e_br_j_taken_ff  <= d_br_j_taken_i | (d_branch_i & branch_des);
-...
+module miriscv_execute_stage;
+
+  ...
+
+  e_br_j_taken_ff  <= d_br_j_taken_i | (d_branch_i & branch_des);
+
+  ...
+
+endmodule
 ```
 
 Поразмыслив над логикой формирования, можно сделать вывод, что данный сигнал равен 1 в том случае, если на стадии декодирования (decode) обнаружена инструкция безусловного перехода, либо если на стадии декодирования обнаружена инструкция условного перехода и на стадии выполнения (execute) условие перехода истинно.
@@ -390,6 +429,9 @@ e_br_j_taken_ff  <= d_br_j_taken_i | (d_branch_i & branch_des);
 
 ```SystemVerilog
 ...
+module miriscv_execute_stage;
+
+  ...
 
   miriscv_alu
   i_alu
@@ -401,7 +443,9 @@ e_br_j_taken_ff  <= d_br_j_taken_i | (d_branch_i & branch_des);
     .alu_branch_des_o  ( branch_des        )
   );
 
-...
+  ...
+
+endmodule
 ```
 
 Отправим на временную диаграмму сигналы подключения АЛУ `d_op1_i`, `d_op2_i`, `d_alu_operation_i`, `branch_des`:
@@ -414,6 +458,9 @@ e_br_j_taken_ff  <= d_br_j_taken_i | (d_branch_i & branch_des);
 
 ```SystemVerilog
 ...
+module miriscv_decode_stage;
+
+  ...
 
   always_comb begin
     unique case (decode_ex_op2_sel)
@@ -424,7 +471,9 @@ e_br_j_taken_ff  <= d_br_j_taken_i | (d_branch_i & branch_des);
     endcase
   end
 
-...
+  ...
+
+endmodule
 ```
 
 Отправим сигнал `op2` и сигнал `decode_ex_op2_sel`, отвечающий за его формирование, на временную диаграмму:
@@ -445,6 +494,9 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_decode_stage.sv
 
 ```SystemVerilog
 ...
+module miriscv_decode_stage;
+
+  ...
 
   miriscv_gpr
   i_gpr
@@ -462,17 +514,24 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_decode_stage.sv
     .r2_data_o  ( r2_data     )
   );
 
-...
+  ...
+
+endmodule
 ```
 
 Осознаем, что это просто один из двух комбинационных выходов асинхронного чтения регистрового файла. Значение считывается по адресу `r2_addr`. Ищем объявление этого провода:
 
 ```SystemVerilog
 ...
+module miriscv_decode_stage;
+
+  ...
 
   assign r2_addr = f_instr_i[25:21];
 
-...
+  ...
+
+endmodule
 ```
 
 А вот и "виновник торжества"! Согласно спецификации адрес второго операнда в регистровом файле в RISC-V инструкции `beq` кодируется битами с 24 по 20:
@@ -493,7 +552,16 @@ gedit ../../../submodules/MIRISCV/miriscv/rtl/miriscv_decode_stage.sv
 Ищем объявление провода `r2_addr`, значение которого формируется ошибочно:
 
 ```SystemVerilog
-assign r2_addr = f_instr_i[25:21];
+...
+module miriscv_decode_stage;
+
+  ...
+
+  assign r2_addr = f_instr_i[25:21];
+
+  ...
+
+endmodule
 ```
 
 **Еще раз обратим внимание**, что согласно спецификации адрес второго операнда в регистровом файле в RISC-V инструкции `beq` кодируется битами с 24 по 20:
