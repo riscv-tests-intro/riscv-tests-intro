@@ -91,7 +91,7 @@
 
 Хотя тенденция развития у архитектуры многообещающая. Например, в [опубликованное в 2022 году исследование](https://riscv.org/blog/2022/02/semico-researchs-new-report-predicts-there-will-be-25-billion-risc-v-based-ai-socs-by-2027) предсказывает к 2027 году наличие 27 миллиардов RISC-V СнК для искусственного интеллекта по всему миру.
 
-В 2022 году [поступил в продажу первый ноутбук с ядром на архитектуре RISC-V](https://habr.com/en/companies/selectel/articles/691252/). Эта история получила продолжение, не так давно вышла уже [вторая версия этого ноутбука](https://riscv.org/blog/2024/08/unlocking-the-potential-of-your-risc-v-laptop-the-dc-roma-laptop-ii/). Множество компаний высказываются в поддержку и проводят инвестиционные программы, например:
+В 2022 году [поступил в продажу первый ноутбук с ядром на архитектуре RISC-V](https://habr.com/en/companies/selectel/articles/691252/). Эта история получила продолжение: в июне 2024 года открылся предзаказ на [вторую версию](https://www.cnews.ru/news/top/2024-06-14_sozdan_supermoshchnyj_noutbuk). Множество компаний высказываются в поддержку и проводят инвестиционные программы, например:
 - [RISC-V дизайн-центр в Барселоне от Intel](https://www.eenewseurope.com/en/400m-risc-v-design-centre-for-barcelona);
 - [Qualcomm разработает решение на RISC-V для умных часов от Google](https://riscv.org/news/2023/10/qualcomm-to-bring-risc-v-based-wearable-platform-to-wear-os-by-google/);
 - [Крупнейшая российская компания в сфере систем хранения данных Yadro "переключилась" на архитектуру RISC-V](https://3dnews.ru/1088875/yadro-ushlo-ot-ibm-i-prishlo-k-risc-v).
