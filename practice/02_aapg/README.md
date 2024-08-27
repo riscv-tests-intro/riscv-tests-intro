@@ -106,9 +106,9 @@ endclass
 Подробную документацию на процессор можно найти по [ссылке](https://github.com/riscv-tests-intro/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77/doc/miriscv/miriscv_scheme.md). В рамках курса его функциональные особенности подробно разбираться не будут, а необходимая для выполнения заданий информация будет даваться по ходу повествования.
 
 
-## Используемая эталонная модель [Spike](https://github.com/riscv-software-src/riscv-isa-sim/tree/00dfa28cd71326a9b553052bf0160cb76f0e7e07)
+## Используемая эталонная модель [Spike](https://github.com/riscv-software-src/riscv-isa-sim/tree/887d02e42124ddc86476dfdf4aad4be8ba7f0aef)
 
-Для тестирования процессорного ядра будет использоваться эталонная модель [Spike](https://github.com/riscv-software-src/riscv-isa-sim/tree/00dfa28cd71326a9b553052bf0160cb76f0e7e07), написанная на языке C. В настоящее время эта модель является самой популярной открытой моделью.
+Для тестирования процессорного ядра будет использоваться эталонная модель [Spike](https://github.com/riscv-software-src/riscv-isa-sim/tree/887d02e42124ddc86476dfdf4aad4be8ba7f0aef), написанная на языке C. В настоящее время эта модель является самой популярной открытой моделью.
 
 На момент создания данного практического задания в репозитории данного набора тестов присутствует 870 закрытых и 36 открытых pull requests, один из которых был создан 2 дня назад.
 
@@ -1986,7 +1986,7 @@ riscv32-unknown-elf-objcopy -O binary out/aapg/bin/program.riscv \
 
 ### Запуск эталонной модели
 
-Для тестирования процессорного ядра будет использоваться эталонная модель [Spike](https://github.com/riscv-software-src/riscv-isa-sim/tree/00dfa28cd71326a9b553052bf0160cb76f0e7e07), написанная на языке C.
+Для тестирования процессорного ядра будет использоваться эталонная модель [Spike](https://github.com/riscv-software-src/riscv-isa-sim/tree/887d02e42124ddc86476dfdf4aad4be8ba7f0aef), написанная на языке C.
 
 Создадим директорию для сохранения артефактов запуска эталонной модели:
 

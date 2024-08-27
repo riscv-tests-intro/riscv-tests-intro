@@ -98,7 +98,7 @@ git -c submodule."submodules/riscv-gnu-toolchain".update=none submodule update -
 Вы можете вручную **установить следущее ПО** на свой дистрибутив Linux:
 
 - [Генератор случайных инструкций RISC-V AAPG `2d7d40f`](https://github.com/riscv-tests-intro/aapg/tree/2d7d40feb8ce7ae20ccbe8225ed9947c188e9cc3);
-- [Программная модель RISC-V Spike ISS `00dfa28`](https://github.com/riscv-software-src/riscv-isa-sim/tree/00dfa28cd71326a9b553052bf0160cb76f0e7e07);
+- [Программная модель RISC-V Spike ISS `887d02e`](https://github.com/riscv-software-src/riscv-isa-sim/tree/887d02e42124ddc86476dfdf4aad4be8ba7f0aef);
 - [ПО riscv-gnu-toolchain `6d7b5b7`](https://github.com/riscv-collab/riscv-gnu-toolchain/tree/6d7b5b720f6c6a89b4f22c62b22c1d0ebc2dc353);
 - [Verilator 5.024 `522bead`](https://github.com/verilator/verilator/tree/522bead374d6b7b2adb316304126e5361b18bcf1);
 - [GTKWave](https://gtkwave.sourceforge.net/).
