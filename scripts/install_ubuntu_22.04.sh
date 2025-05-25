@@ -90,7 +90,7 @@ cd ..
 
 # Remove build
 
-rm -rf build
+sudo rm -rf build
 mkdir build
 cd build
 

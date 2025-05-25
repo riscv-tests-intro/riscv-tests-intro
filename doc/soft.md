@@ -63,7 +63,7 @@ libslirp-dev -y
 Создаем директорию сборки и переходим в нее:
 
 ```bash
-rm -rf build
+sudo rm -rf build
 mkdir build
 cd build
 ```
@@ -106,7 +106,7 @@ cd submodules/riscv-gnu-toolchain
 Создаем директорию сборки и переходим в нее:
 
 ```bash
-rm -rf build
+sudo rm -rf build
 mkdir build
 cd build
 ```
