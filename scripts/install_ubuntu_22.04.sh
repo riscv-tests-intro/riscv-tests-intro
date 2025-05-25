@@ -86,6 +86,30 @@ source /etc/profile
 
 # Go back
 
+cd ..
+
+# Remove build
+
+rm -rf build
+mkdir build
+cd build
+
+# Configure for 64 bit
+
+../configure --prefix=$INSTALL_DIR/riscv-gnu-toolchain-64 \
+--with-arch=rv64gcv_zicsr --with-abi=lp64d
+
+# Build and install
+
+sudo make -j $(nproc)
+
+# Add to PATH
+
+echo "PATH=$INSTALL_DIR/riscv-gnu-toolchain-64/bin"':$PATH' | sudo tee -a /etc/profile
+source /etc/profile
+
+# Go back
+
 cd ../../..
 
 

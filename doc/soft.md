@@ -47,7 +47,7 @@ sudo python3 setup.py install
 
 Да, `setup.py` действительно нужно выполнить дважды.
 
-## ПО riscv-gnu-toolchain `6d7b5b7`
+## ПО riscv-gnu-toolchain RV32IM `6d7b5b7`
 
 Переходим в директорию и устанавливаем зависимости:
 
@@ -63,6 +63,7 @@ libslirp-dev -y
 Создаем директорию сборки и переходим в нее:
 
 ```bash
+rm -rf build
 mkdir build
 cd build
 ```
@@ -91,6 +92,49 @@ source /etc/profile
 
 ```bash
 echo "PATH=$INSTALL_DIR/riscv-gnu-toolchain/bin"':$PATH' >> ~/.profile
+source ~/.profile
+```
+
+## ПО riscv-gnu-toolchain RV64GCV `6d7b5b7`
+
+Переходим в директорию:
+
+```bash
+cd submodules/riscv-gnu-toolchain
+```
+
+Создаем директорию сборки и переходим в нее:
+
+```bash
+rm -rf build
+mkdir build
+cd build
+```
+
+Конфигурируем:
+
+```
+../configure --prefix=$INSTALL_DIR/riscv-gnu-toolchain-64 \
+--with-arch=rv64gcv_zicsr --with-abi=lp64d
+```
+
+Собираем и устанавливаем (в зависимости от мощности машины время сборки ~5-30 мин):
+
+```bash
+sudo make -j $(nproc)
+```
+
+Добавляем в PATH для всех рользователей:
+
+```bash
+echo "PATH=$INSTALL_DIR/riscv-gnu-toolchain-64/bin"':$PATH' | sudo tee -a /etc/profile
+source /etc/profile
+```
+
+**или** текущего:
+
+```bash
+echo "PATH=$INSTALL_DIR/riscv-gnu-toolchain-64/bin"':$PATH' >> ~/.profile
 source ~/.profile
 ```
 
