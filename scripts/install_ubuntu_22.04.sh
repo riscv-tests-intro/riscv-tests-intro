@@ -18,9 +18,10 @@ done
 # Common
 #-----------------------------------------------------------------
 
-sudo apt-get install git make gcc g++ python3 python3-pip \
-libyaml-dev libpython2.7-dev -y
-sudo pip install pathlib3x typeguard typing_utils
+sudo apt-get install git make gcc g++ clang python3 \
+python3-pip libyaml-dev libpython2.7-dev -y
+sudo pip install pathlib3x typeguard typing_utils \
+pybind11 meson==1.8.1
 
 
 #-----------------------------------------------------------------
@@ -107,7 +108,7 @@ cd build
 
 # Configure
 
-../configure --prefix=$INSTALL_DIR/spike
+../configure --without-boost --without-boost-asio --without-boost-regex --prefix=$INSTALL_DIR/spike
 
 # Build
 
