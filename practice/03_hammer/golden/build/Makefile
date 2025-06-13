@@ -83,7 +83,7 @@ $(OUT)/verilator/compile.log: $(OUT)/hammer/compile.log $(verilog) | $(OUT)
 	echo "*** Compiling RTL under Verilator (log at $@)"
 	mkdir -p $(@D)
 	verilator $(DWARNINGS) --relative-includes -j $(NPROCS) --threads $(NPROCS) \
-		--binary $(verilog) $(PWD)/hammer_dpi.c $(OPTS) --trace --trace-params --trace-structs \
+		--binary $(verilog) $(PWD)/hammer_dpi.cpp $(OPTS) --trace --trace-params --trace-structs \
 			--x-assign 0 -top-module $(TOP) -Mdir $(@D) -CFLAGS "-I$(spike_install_dir)/include/softfloat \
 				-I$(spike_install_dir)/include -I$(submodule_dir)/hammer-miriscv" -LDFLAGS "-L$(OUT)/hammer -l:libhammer.a \
 					-L$(spike_install_dir)/lib -l:libriscv.so -Wl,-rpath,$(spike_install_dir)/lib" &> $@

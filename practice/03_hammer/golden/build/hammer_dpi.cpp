@@ -41,14 +41,6 @@ void hammer_single_step(void* hammer) {
   hammer_ptr->single_step(0);
 }
 
-std::string insn;
-const char* hammer_get_insn_str(void* hammer) {
-  Hammer *hammer_ptr;
-  hammer_ptr = static_cast<Hammer *>(hammer);
-  insn = hammer_ptr->get_insn_str(0);
-  return insn.c_str();
-}
-
 svBitVecVal hammer_get_insn_bits(void* hammer) {
   Hammer *hammer_ptr;
   hammer_ptr = static_cast<Hammer *>(hammer);
