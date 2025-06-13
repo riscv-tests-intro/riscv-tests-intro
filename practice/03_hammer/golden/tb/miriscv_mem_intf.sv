@@ -35,11 +35,11 @@ interface miriscv_mem_intf (
     endfunction
 
     task wait_clks(input int num);
-      repeat (num) @(posedge clk);
+        repeat (num) @(posedge clk);
     endtask
 
     task wait_neg_clks(input int num);
-      repeat (num) @(negedge clk);
+        repeat (num) @(negedge clk);
     endtask
   
 endinterface

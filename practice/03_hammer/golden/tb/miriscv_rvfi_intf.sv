@@ -31,37 +31,37 @@ interface miriscv_rvfi_intf (
     function void get_bus_status (
         miriscv_test_pkg::miriscv_rvfi_item t
     );
-      t.rvfi_valid      = rvfi_valid;
-      t.rvfi_order      = rvfi_order;
-      t.rvfi_insn       = rvfi_insn;
-      t.rvfi_trap       = rvfi_trap;
-      t.rvfi_halt       = rvfi_halt;
-      t.rvfi_intr       = rvfi_intr;
-      t.rvfi_mode       = rvfi_mode;
-      t.rvfi_ixl        = rvfi_ixl;
-      t.rvfi_rs1_addr   = rvfi_rs1_addr;
-      t.rvfi_rs2_addr   = rvfi_rs2_addr;
-      t.rvfi_rs3_addr   = rvfi_rs3_addr;
-      t.rvfi_rs1_rdata  = rvfi_rs1_rdata;
-      t.rvfi_rs2_rdata  = rvfi_rs2_rdata;
-      t.rvfi_rs3_rdata  = rvfi_rs3_rdata;
-      t.rvfi_rd_addr    = rvfi_rd_addr;
-      t.rvfi_rd_wdata   = rvfi_rd_wdata;
-      t.rvfi_pc_rdata   = rvfi_pc_rdata;
-      t.rvfi_pc_wdata   = rvfi_pc_wdata;
-      t.rvfi_mem_addr   = rvfi_mem_addr;
-      t.rvfi_mem_rmask  = rvfi_mem_rmask;
-      t.rvfi_mem_wmask  = rvfi_mem_wmask;
-      t.rvfi_mem_rdata  = rvfi_mem_rdata;
-      t.rvfi_mem_wdata  = rvfi_mem_wdata;
+        t.rvfi_valid      = rvfi_valid;
+        t.rvfi_order      = rvfi_order;
+        t.rvfi_insn       = rvfi_insn;
+        t.rvfi_trap       = rvfi_trap;
+        t.rvfi_halt       = rvfi_halt;
+        t.rvfi_intr       = rvfi_intr;
+        t.rvfi_mode       = rvfi_mode;
+        t.rvfi_ixl        = rvfi_ixl;
+        t.rvfi_rs1_addr   = rvfi_rs1_addr;
+        t.rvfi_rs2_addr   = rvfi_rs2_addr;
+        t.rvfi_rs3_addr   = rvfi_rs3_addr;
+        t.rvfi_rs1_rdata  = rvfi_rs1_rdata;
+        t.rvfi_rs2_rdata  = rvfi_rs2_rdata;
+        t.rvfi_rs3_rdata  = rvfi_rs3_rdata;
+        t.rvfi_rd_addr    = rvfi_rd_addr;
+        t.rvfi_rd_wdata   = rvfi_rd_wdata;
+        t.rvfi_pc_rdata   = rvfi_pc_rdata;
+        t.rvfi_pc_wdata   = rvfi_pc_wdata;
+        t.rvfi_mem_addr   = rvfi_mem_addr;
+        t.rvfi_mem_rmask  = rvfi_mem_rmask;
+        t.rvfi_mem_wmask  = rvfi_mem_wmask;
+        t.rvfi_mem_rdata  = rvfi_mem_rdata;
+        t.rvfi_mem_wdata  = rvfi_mem_wdata;
     endfunction
 
     task wait_clks(input int num);
-      repeat (num) @(posedge clk);
+        repeat (num) @(posedge clk);
     endtask
 
     task wait_neg_clks(input int num);
-      repeat (num) @(negedge clk);
+        repeat (num) @(negedge clk);
     endtask
   
 endinterface
