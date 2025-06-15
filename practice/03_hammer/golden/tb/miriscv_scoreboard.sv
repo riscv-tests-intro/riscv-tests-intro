@@ -41,7 +41,7 @@ class miriscv_scoreboard;
         if( cur_insn_info.pc !== t.rvfi_pc_rdata ) begin
             msg = "\nPC mismatch! "; result = 0;
         end
-        if( cur_insn_info.pc.bits !== t.rvfi_insn ) begin
+        if( cur_insn_info.bits !== t.rvfi_insn ) begin
             msg = {msg, "Instruction mismatch!"}; result = 0;
         end
         if( !result ) begin
