@@ -39,8 +39,8 @@ class miriscv_scoreboard;
             msg = {msg, "Instruction mismatch!"}; result = 0;
         end
         if( !result ) begin
-            msg = {msg, $sformatf("\nHammer  PC: %8h insn: %8h \nMIRISCV PC: %8h insn: %8h",
-                hammer_pc, hammer_insn, t.rvfi_pc_rdata, t.rvfi_insn)};
+            msg = {msg, $sformatf("\nHammer PC: %8h insn: %8h (%s) \nMIRISCV PC: %8h insn: %8h",
+                hammer_pc, hammer_insn, hammer_get_insn_str(), t.rvfi_pc_rdata, t.rvfi_insn)};
             $display(msg);
         end
         return result;
@@ -52,8 +52,8 @@ class miriscv_scoreboard;
         hammer_rd = hammer_get_gpr(hammer, t.rvfi_rd_addr);
         if( hammer_rd !== t.rvfi_rd_wdata ) begin
             msg = "\nRD mismatch! ";
-            msg = {msg, $sformatf("PC: %8h insn: %8h",
-                t.rvfi_pc_rdata, t.rvfi_insn)};
+            msg = {msg, $sformatf("PC: %8h insn: %8h (%s)",
+                t.rvfi_pc_rdata, t.rvfi_insn, hammer_get_insn_str())};
             result = 0;
         end
         if( !result ) begin

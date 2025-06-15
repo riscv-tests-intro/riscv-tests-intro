@@ -19,6 +19,10 @@ import "DPI-C" function void hammer_set_PC(
     bit [31:0] new_pc_value
 );
 
+import "DPI-C" function string hammer_get_insn_str(
+    chandle hammer
+);
+
 import "DPI-C" function bit [31:0] hammer_get_insn_bits(
     chandle hammer
 );
