@@ -16,9 +16,9 @@ class miriscv_compare_logger;
         string msg;
         msg = $sformatf("Retire time: %t", retire_time);
         msg = {msg, $sformatf("\nSpike PC: %8h insn: %8h (%s) \nMIRISCV PC: %8h insn: %8h",
-            cur_insn_info.pc, cur_insn_info.bits, cur_insn_info.str, t.rvfi_pc_rdata, t.rvfi_insn)};
+            info.pc, info.bits, info.str, rvfi_trans.rvfi_pc_rdata, rvfi_trans.rvfi_insn)};
         msg = {msg, $sformatf("\nSpike RD x%0d: %8h \nMIRISCV RD x%0d: %8h",
-            t.rvfi_rd_addr, cur_insn_info.rd, t.rvfi_rd_addr, t.rvfi_rd_wdata)};
+            rvfi_trans.rvfi_rd_addr, info.rd, rvfi_trans.rvfi_rd_addr, rvfi_trans.rvfi_rd_wdata)};
         msg = compare_result ? {"\n\nPASSED at ", msg} : {"\n\nFAILED at ", msg};
         log_fd.write(msg);
     endfunction
