@@ -4,7 +4,7 @@ class miriscv_compare_logger;
 
     function new(string log);
         log_fd = $fopen(log, "w");
-        log_fd.write("\nMIRISCV vs Spike step-and-compare log\n");
+        $fwrite(log_fd, "\nMIRISCV vs Spike step-and-compare log\n");
     endfunction
 
     virtual function void log(
@@ -20,7 +20,7 @@ class miriscv_compare_logger;
         msg = {msg, $sformatf("\nSpike RD x%0d: %8h \nMIRISCV RD x%0d: %8h",
             rvfi_trans.rvfi_rd_addr, info.rd, rvfi_trans.rvfi_rd_addr, rvfi_trans.rvfi_rd_wdata)};
         msg = compare_result ? {"\n\nPASSED at ", msg} : {"\n\nFAILED at ", msg};
-        log_fd.write(msg);
+        $fwrite(log_fd, msg);
     endfunction
 
 endclass
