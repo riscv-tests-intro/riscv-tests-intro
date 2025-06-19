@@ -49,7 +49,7 @@ DWARNINGS += -Wno-WIDTHEXPAND -Wno-WIDTHTRUNC -Wno-UNUSEDSIGNAL \
 		-Wno-INFINITELOOP -Wno-MULTIDRIVEN -Wno-INITIALDLY
 
 # Compile options
-OPTS += +incdir+../tb/ +define+BOOT_ADDR=2147483648
+COMP_OPTS += +incdir+../tb/ +define+BOOT_ADDR=2147483648
 
 # Print last lines form run log switch
 RESULT_DEBUG = 0
@@ -77,7 +77,7 @@ verilog = $(shell sed 's+<submodule_dir>+$(submodule_dir)+g' tb.f > \
 $(OUT)/verilator/run.log: $(OUT)/verilator/compile.log
 	echo "*** Running RTL simulation (log at $@)"
 	$(@D)/V$(TOP) +bin=$(OUT)/aapg/bin/$(BIN).bin +elf=$(OUT)/aapg/bin/$(BIN).riscv \
-	    +timeout_in_cycles=$(TIMEOUT) +ibex_tracer_file_base=$(@D)/rtl_log \
+	    +timeout_in_cycles=$(TIMEOUT) +ibex_tracer_file_base=$(@D)/rtl_log $(SIM_OPTS) \
 			+dump=$(basename $@).vcd +signature_addr=$(SIGNATURE_ADDR) &> $@
 ifeq ($(RESULT_DEBUG), 1)
 	tail -5 $@
@@ -88,7 +88,7 @@ $(OUT)/verilator/compile.log: $(OUT)/hammer/compile.log $(verilog) | $(OUT)
 	echo "*** Compiling RTL under Verilator (log at $@)"
 	mkdir -p $(@D)
 	verilator $(DWARNINGS) --relative-includes -j $(NPROCS) --threads $(NPROCS) \
-		--binary $(verilog) $(PWD)/hammer_dpi.cpp $(OPTS) --trace --trace-params --trace-structs \
+		--binary $(verilog) $(PWD)/hammer_dpi.cpp $(COMP_OPTS) --trace --trace-params --trace-structs \
 			--x-assign 0 -top-module $(TOP) -Mdir $(@D) -CFLAGS "-I$(spike_install_dir)/include/softfloat \
 				-I$(spike_install_dir)/include -I$(submodule_dir)/hammer-miriscv" -LDFLAGS "-L$(OUT)/hammer -l:libhammer.a \
 					-L$(spike_install_dir)/lib -l:libriscv.so -Wl,-rpath,$(spike_install_dir)/lib" &> $@
