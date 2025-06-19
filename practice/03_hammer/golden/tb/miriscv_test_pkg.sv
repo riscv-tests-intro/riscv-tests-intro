@@ -10,6 +10,7 @@ package miriscv_test_pkg;
     `include "miriscv_rvfi_monitor.sv"
     `include "miriscv_defines.svh"
     `include "miriscv_hammer_dpi.svh"
+    `include "miriscv_compare_logger.sv"
     `include "miriscv_scoreboard.sv"
     `include "miriscv_test.sv"
 

@@ -8,10 +8,16 @@ class miriscv_scoreboard;
 
     protected miriscv_insn_info_s cur_insn_info;
 
+    protected miriscv_compare_logger logger;
+
     virtual function void init(string elf, bit [31:0] pc);
+        bit en_compare_log;
         hammer = hammer_init(elf);
         hammer_set_PC(hammer, pc);
-        $display("Hammer was initialized with PC: %8h", pc);
+        $display("Spike was initialized with PC: %8h", pc);
+        if($value$plusargs("en_compare_log=%1b", en_compare_log)) begin
+            if(en_compare_log) logger = new("spike_step_and_compare.log");
+        end
     endfunction
 
     virtual function int unsigned get_retire_cnt();
@@ -28,7 +34,8 @@ class miriscv_scoreboard;
           rvfi_mbx.get(t);
           result = check_pc_and_instr(t);
           hammer_single_step(hammer);
-          if( result ) void'(check_rd(t));
+          result = result | check_rd(t);
+          if(logger) logger.log(cur_insn_info, t, result);
           retire_cnt = retire_cnt + 1;
       end
     endtask
@@ -45,7 +52,7 @@ class miriscv_scoreboard;
             msg = {msg, "Instruction mismatch!"}; result = 0;
         end
         if( !result ) begin
-            msg = {msg, $sformatf("\nHammer PC: %8h insn: %8h (%s) \nMIRISCV PC: %8h insn: %8h",
+            msg = {msg, $sformatf("\nSpike PC: %8h insn: %8h (%s) \nMIRISCV PC: %8h insn: %8h",
                 cur_insn_info.pc, cur_insn_info.bits, cur_insn_info.str, t.rvfi_pc_rdata, t.rvfi_insn)};
             $display(msg);
         end
@@ -62,7 +69,7 @@ class miriscv_scoreboard;
             result = 0;
         end
         if( !result ) begin
-            msg = {msg, $sformatf("\nHammer  x%0d: %8h \nMIRISCV x%0d: %8h",
+            msg = {msg, $sformatf("\nSpike x%0d: %8h \nMIRISCV x%0d: %8h",
                 t.rvfi_rd_addr, cur_insn_info.rd, t.rvfi_rd_addr, t.rvfi_rd_wdata)};
             $display(msg);
         end
