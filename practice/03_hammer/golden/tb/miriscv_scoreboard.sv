@@ -11,12 +11,12 @@ class miriscv_scoreboard;
     protected miriscv_compare_logger logger;
 
     virtual function void init(string elf, bit [31:0] pc);
-        bit en_compare_log;
+        string compare_log;
         hammer = hammer_init(elf);
         hammer_set_PC(hammer, pc);
         $display("Spike was initialized with PC: %8h", pc);
-        if($value$plusargs("en_compare_log=%1b", en_compare_log)) begin
-            if(en_compare_log) logger = new("spike_step_and_compare.log");
+        if($value$plusargs("compare_log=%s", compare_log)) begin
+            logger = new(compare_log);
         end
     endfunction
 

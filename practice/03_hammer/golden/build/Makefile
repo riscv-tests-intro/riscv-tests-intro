@@ -35,7 +35,12 @@ SIGNATURE_ADDR = 80100000
 
 # Memory debug switch
 ifeq ($(MEM_DEBUG),1)
-	OPTS += +define+MEM_DEBUG
+	COMP_OPTS += +define+MEM_DEBUG
+endif
+
+# Step-and-compare logging switch
+ifneq ($(COMPARE_LOG),)
+	SIM_OPTS += +compare_log=$(OUT)/verilator/$(COMPARE_LOG)
 endif
 
 # Disable warnings
