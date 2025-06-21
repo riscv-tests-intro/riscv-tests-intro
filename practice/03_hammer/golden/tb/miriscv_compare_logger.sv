@@ -4,6 +4,8 @@ class miriscv_compare_logger;
 
     function new(string log);
         log_fd = $fopen(log, "w");
+        if (!log_fd) $fatal("Cannot open file %0s", log);
+        $display("MIRISCV vs Spike step-and-compare log will be saved to %s", log);
         $fwrite(log_fd, "\nMIRISCV vs Spike step-and-compare log");
     endfunction
 
