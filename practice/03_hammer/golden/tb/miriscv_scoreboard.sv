@@ -34,7 +34,7 @@ class miriscv_scoreboard;
           rvfi_mbx.get(t);
           result = check_pc_and_instr(t);
           hammer_single_step(hammer);
-          result = result | check_rd(t);
+          result = result & check_rd(t);
           if(logger) logger.log($time(), cur_insn_info, t, result);
           retire_cnt = retire_cnt + 1;
       end
