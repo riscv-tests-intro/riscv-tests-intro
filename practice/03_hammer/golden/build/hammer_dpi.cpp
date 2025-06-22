@@ -1,6 +1,6 @@
 #include <svdpi.h>
 #include <vector>
-#include "Vmiriscv_tb_top__Dpi.h"
+#include "Vmiriscv_hammer_dpi__Dpi.h"
 #include "hammer.h"
 
 void* hammer_init(const char* target_binary) {
