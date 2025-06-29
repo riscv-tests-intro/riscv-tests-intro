@@ -1,0 +1,88 @@
+--- ../02_aapg/golden/tb/miriscv_test.sv
++++ ./tb/miriscv_test.sv
+@@ -2,14 +2,24 @@
+ 
+             bit               [31:0] signature_addr;
+             int unsigned             timeout_in_cycles = 1000000;
++
+             miriscv_mem_agent        slv;
+             mem_model                mem;
+             miriscv_mem_seq          slv_seq;
+     virtual miriscv_mem_intf         vif;
+ 
+-    function new(virtual miriscv_mem_intf vif);
+-        mailbox#(miriscv_mem_item) reactive_mbx;
+-        mailbox#(miriscv_mem_item) slv_mbx;
++            miriscv_rvfi_monitor     rvfi_mon;
++    virtual miriscv_rvfi_intf        rvfi_vif;
++
++            miriscv_scoreboard       scb;
++
++    function new(
++        virtual miriscv_mem_intf  vif,
++        virtual miriscv_rvfi_intf rvfi_vif,
++    );
++        mailbox#(miriscv_mem_item ) reactive_mbx;
++        mailbox#(miriscv_mem_item ) slv_mbx;
++        mailbox#(miriscv_rvfi_item) rvfi_mbx;
+         this.vif             = vif;
+         slv                  = new(vif);
+         mem                  = new();
+@@ -21,6 +31,12 @@
+         slv_seq.mem          = mem;
+         slv.drv.mbx          = slv_mbx;
+         slv_seq.mbx          = slv_mbx;
++        this.rvfi_vif        = rvfi_vif;
++        rvfi_mon             = new(rvfi_vif);
++        scb                  = new();
++        rvfi_mbx             = new();
++        rvfi_mon.mbx         = rvfi_mbx;
++        scb.rvfi_mbx         = rvfi_mbx;
+     endfunction
+ 
+     function void load_binary_to_mem();
+@@ -39,6 +55,16 @@
+             addr++;
+         end
+     endfunction
++
++    function void hammer_init();
++        string elf;
++        if(!$value$plusargs("elf=%0s", elf)) begin
++            $fatal("Provide hammer elf via +elf plusarg!");
++        end
++        else begin
++            scb.init(elf, `BOOT_ADDR);
++        end
++    endfunction
+     
+     virtual task timeout();
+         string timeout;
+@@ -47,6 +73,7 @@
+         end
+         repeat(timeout_in_cycles) vif.wait_clks(1);
+         $display("%0t Test was finished by timeout", $time());
++        $display("Amount of retired instructions checked: %0d", scb.get_retire_cnt());
+         $finish();
+     endtask
+ 
+@@ -74,15 +101,19 @@
+         end
+         repeat(10) vif.wait_clks(1);
+         $display("Test end condition was detected. Test done!");
++        $display("Amount of retired instructions checked: %0d", scb.get_retire_cnt());
+         $finish();
+     endtask
+     
+     virtual task run();
+         get_signature_addr();
+         load_binary_to_mem();
++        hammer_init();
+         fork
+             slv.run();
+             slv_seq.run();
++            rvfi_mon.run();
++            scb.run();
+             timeout();
+             wait_for_test_done();
+         join
