@@ -90,10 +90,10 @@ endif
 $(OUT)/verilator/compile.log: $(OUT)/hammer/compile.log $(verilog) | $(OUT)
 	echo "*** Compiling RTL under Verilator (log at $@)"
 	mkdir -p $(@D)
-	verilator $(dpi_c_verilog_header) -Mdir $(@D) --dpi-hdr-only
+	verilator $(dpi_c_verilog_header) -Mdir ./ --dpi-hdr-only
 	verilator $(DWARNINGS) --relative-includes -j $(NPROCS) --threads $(NPROCS) \
 		--binary $(verilog) $(PWD)/hammer_dpi.cpp $(COMP_OPTS) --trace --trace-params --trace-structs \
-			--x-assign 0 -top-module $(TOP) -Mdir $(@D) -CFLAGS "-I$(@D)-I$(spike_install_dir)/include/softfloat \
+			--x-assign 0 -top-module $(TOP) -Mdir $(@D) -CFLAGS "-I./-I$(spike_install_dir)/include/softfloat \
 				-I$(spike_install_dir)/include -I$(submodule_dir)/hammer-miriscv" -LDFLAGS "-L$(OUT)/hammer -l:libhammer.a \
 					-L$(spike_install_dir)/lib -l:libriscv.so -Wl,-rpath,$(spike_install_dir)/lib" &> $@
 
