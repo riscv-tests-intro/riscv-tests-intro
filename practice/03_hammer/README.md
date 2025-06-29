@@ -2051,7 +2051,7 @@ endclass
 
 Закроем файл `miriscv_scoreboard.sv`.
 
-### Добавление `miriscv_compare_logger` в пакет теста `miriscv_test_pkg`
+#### Добавление `miriscv_compare_logger` в пакет теста `miriscv_test_pkg`
 
 Подключим в пакет теста `miriscv_compare_logger`.
 
