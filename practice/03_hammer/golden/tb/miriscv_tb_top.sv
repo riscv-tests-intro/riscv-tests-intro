@@ -10,7 +10,7 @@ module miriscv_tb_top;
     logic arstn;
 
     // Interfaces
-    miriscv_mem_intf  mem_intf (clk, arstn);
+    miriscv_mem_intf  intf     (clk, arstn);
     miriscv_rvfi_intf rvfi_intf(clk, arstn);
 
     initial begin
@@ -39,19 +39,19 @@ module miriscv_tb_top;
         .boot_addr_i          ( `BOOT_ADDR               ),
 
         // Instruction memory interface
-        .instr_rvalid_i       ( mem_intf.instr_rvalid    ),
-        .instr_rdata_i        ( mem_intf.instr_rdata     ),
-        .instr_req_o          ( mem_intf.instr_req       ),
-        .instr_addr_o         ( mem_intf.instr_addr      ),
+        .instr_rvalid_i       ( intf.instr_rvalid        ),
+        .instr_rdata_i        ( intf.instr_rdata         ),
+        .instr_req_o          ( intf.instr_req           ),
+        .instr_addr_o         ( intf.instr_addr          ),
 
         // Data memory interface
-        .data_rvalid_i        ( mem_intf.data_rvalid     ),
-        .data_rdata_i         ( mem_intf.data_rdata      ),
-        .data_req_o           ( mem_intf.data_req        ),
-        .data_we_o            ( mem_intf.data_we         ),
-        .data_be_o            ( mem_intf.data_be         ),
-        .data_addr_o          ( mem_intf.data_addr       ),
-        .data_wdata_o         ( mem_intf.data_wdata      ),
+        .data_rvalid_i        ( intf.data_rvalid         ),
+        .data_rdata_i         ( intf.data_rdata          ),
+        .data_req_o           ( intf.data_req            ),
+        .data_we_o            ( intf.data_we             ),
+        .data_be_o            ( intf.data_be             ),
+        .data_addr_o          ( intf.data_addr           ),
+        .data_wdata_o         ( intf.data_wdata          ),
 
         // RVFI
         .rvfi_valid_o         ( rvfi_intf.rvfi_valid     ),
@@ -88,7 +88,7 @@ module miriscv_tb_top;
         $dumpfile(dump);
         $dumpvars;
         // Create and run test
-        test = new(mem_intf, rvfi_intf);
+        test = new(intf, rvfi_intf);
         test.run();
     end
 
