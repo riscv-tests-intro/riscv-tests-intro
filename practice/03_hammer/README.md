@@ -41,6 +41,7 @@
     - [Добавление отладочной информации](#добавление-отладочной-информации)
       - [Класс `miriscv_compare_logger`](#класс-miriscv_compare_logger)
       - [Добавление `miriscv_compare_logger` в класс проверки](#добавление-miriscv_compare_logger-в-класс-проверки)
+      - [Добавление `miriscv_compare_logger` в пакет теста `miriscv_test_pkg`](#добавление-miriscv_compare_logger-в-пакет-теста-miriscv_test_pkg)
     - [Осознанное внедрение ошибок](#осознанное-внедрение-ошибок)
       - [Модификация RTL MIRISCV](#модификация-rtl-miriscv)
       - [Повторный запуск](#повторный-запуск)
