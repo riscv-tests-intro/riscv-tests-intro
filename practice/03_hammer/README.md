@@ -257,7 +257,7 @@ module miriscv_tb_top;
     // DUT
     miriscv_core #(
       .RVFI                 ( 1                        )
-    ) u_miriscv_core (
+    ) DUT (
 
       // Clock and Reset
       .clk_i                ( clk                      ),
@@ -267,19 +267,19 @@ module miriscv_tb_top;
       .boot_addr_i          ( `BOOT_ADDR               ),
 
       // Instruction memory interface
-      .instr_rvalid_i       ( mem_intf.instr_rvalid    ),
-      .instr_rdata_i        ( mem_intf.instr_rdata     ),
-      .instr_req_o          ( mem_intf.instr_req       ),
-      .instr_addr_o         ( mem_intf.instr_addr      ),
+      .instr_rvalid_i       ( intf.instr_rvalid        ),
+      .instr_rdata_i        ( intf.instr_rdata         ),
+      .instr_req_o          ( intf.instr_req           ),
+      .instr_addr_o         ( intf.instr_addr          ),
 
       // Data memory interface
-      .data_rvalid_i        ( mem_intf.data_rvalid     ),
-      .data_rdata_i         ( mem_intf.data_rdata      ),
-      .data_req_o           ( mem_intf.data_req        ),
-      .data_we_o            ( mem_intf.data_we         ),
-      .data_be_o            ( mem_intf.data_be         ),
-      .data_addr_o          ( mem_intf.data_addr       ),
-      .data_wdata_o         ( mem_intf.data_wdata      ),
+      .data_rvalid_i        ( intf.data_rvalid         ),
+      .data_rdata_i         ( intf.data_rdata          ),
+      .data_req_o           ( intf.data_req            ),
+      .data_we_o            ( intf.data_we             ),
+      .data_be_o            ( intf.data_be             ),
+      .data_addr_o          ( intf.data_addr           ),
+      .data_wdata_o         ( intf.data_wdata          ),
 
       // RVFI
       .rvfi_valid_o         (                          ),
@@ -682,7 +682,7 @@ private:
 
 ### Компиляция
 
-Для компиляции `Hammer` перейдем в директорию сборки:
+Для компиляции `Hammer` перейдем в директорию сборки и запуска:
 
 ```bash
 cd build
@@ -697,7 +697,7 @@ mkdir -p out/hammer
 Выполним сборку библиотеки согласно [инструкции из официального репозитория](https://github.com/rivosinc/hammer/tree/6d9fac96407149a1a533cdd3f63f6bbd96614ffa?tab=readme-ov-file#building-hammer-and-running-tests):
 
 ```bash
-spike_install_dir=$(dirname "$(which spike)") 
+spike_install_dir=$(dirname "$(which spike)")/..
 meson setup ./out/hammer ../../../submodules/hammer-miriscv \
   --native-file ../../../submodules/hammer-miriscv/native-file.txt \
    --buildtype release -Dspike_install_dir=${spike_install_dir} &> \
@@ -790,13 +790,13 @@ gedit Vtb_dpi_c__Dpi.h
 Теперь реализуем данную функцию. Создадим файл:
 
 ```bash
-touch tb_dpi_c.сpp
+touch tb_dpi_c.cpp
 ```
 
 Файл можно открыть в любом редакторе. Открываем при помощи gedit:
 
 ```bash
-gedit tb_dpi_c.сpp
+gedit tb_dpi_c.cpp
 ```
 
 Заполним файл следующим кодом:
@@ -810,12 +810,12 @@ void print(const char* msg) {
 };
 ```
 
-Закроем файл `tb_dpi_c.сpp`.
+Закроем файл `tb_dpi_c.cpp`.
 
 Скомпилируем все файлы в исполняемый в Verilator и запустим симуляцию:
 
 ```
-verilator --binary tb_dpi_c.sv tb_dpi_c.c -Mdir ./
+verilator --binary tb_dpi_c.sv tb_dpi_c.cpp -Mdir ./
 ./Vtb_dpi_c
 ```
 
@@ -838,6 +838,12 @@ rm -rf dpi_c_test
 Далее приступим к определению API для взаимодействия со Spike при помощи библиотеки `Hammer`.
 
 ### Определение API со стороны SystemVerilog
+
+Перейдем в директорию исходных файлов верификационного окружения:
+
+```bash
+cd tb
+```
 
 Создадим заголовочный файл `miriscv_hammer_dpi.svh`, в котором будут объявлены методы DPI-C API для взаимодействия c библиотекой `Hammer`. Методы будут вызываться в [классе проверки](#класс-проверки-miriscv_scoreboard) (см. раздел [Структура верификационного окружения](#структура-верификационного-окружения)).
 
@@ -877,6 +883,10 @@ import "DPI-C" function void hammer_set_PC(
     bit [31:0] new_pc_value
 );
 
+import "DPI-C" function string hammer_get_insn_str(
+    chandle hammer
+);
+
 import "DPI-C" function bit [31:0] hammer_get_insn_bits(
     chandle hammer
 );
@@ -889,15 +899,16 @@ import "DPI-C" function bit [31:0] hammer_get_gpr(
 
 Немного остановимся на каждом из DPI-C методов. Ниже представлена таблица с кратким описанием каждого.
 
-| Название                 | Описание                                                                             |
-|:-------------------------|:-------------------------------------------------------------------------------------|
-| `hammer_init()`          | Создание объекта типа `Hammer` и возвращение указателя на него.                      |
-| `hammer_release()`       | Удаление объекта типа `Hammer`.                                                      |
-| `hammer_single_step()`   | Выполнение одной инструкции.                                                         |
-| `hammer_get_PC()`        | Получение текущего значения счетчика команд.                                         |
-| `hammer_set_PC()`        | Установка значения счетчика команд.                                                  |
-| `hammer_get_insn_bits()` | Получение инструкции, которая находится в памяти по адресу текущего счетчика команд. |
-| `hammer_get_gpr()`       | Получение текущего значения регистра общего назначения.                              |
+| Название                 | Описание                                                                                                                    |
+|:-------------------------|:----------------------------------------------------------------------------------------------------------------------------|
+| `hammer_init()`          | Создание объекта типа `Hammer` и возвращение указателя на него.                                                             |
+| `hammer_release()`       | Удаление объекта типа `Hammer`.                                                                                             |
+| `hammer_single_step()`   | Выполнение одной инструкции.                                                                                                |
+| `hammer_get_PC()`        | Получение текущего значения счетчика команд.                                                                                |
+| `hammer_set_PC()`        | Установка значения счетчика команд.                                                                                         |
+| `hammer_get_insn_str()`  | Получение строкового ассемблерного представления инструкции, которая находится в памяти по адресу текущего счетчика команд. |
+| `hammer_get_insn_bits()` | Получение инструкции, которая находится в памяти по адресу текущего счетчика команд.                                        |
+| `hammer_get_gpr()`       | Получение текущего значения регистра общего назначения.                                                                     |
 
 **Обратим внимание** на то, что для взаимодействия со Spike в библиотеке `Hammer` создается класс типа `Hammer` (класс был более подробно разобран в разделе [Анализ и подключение библиотеки `Hammer` в верификационное окружение](#анализ-исходного-кода)). Метод `hammer_init()` спроектирован таким образом, что возвращает указатель на область памяти, где будет располагаться объект созданного класса. Указатель возвращается через тип SystemVerilog `chandle`. SystemVerilog окружение далее может обращаться к объекту типа `Hammer` при помощи этого указателя.
 
@@ -928,14 +939,29 @@ Chandles shall always be initialized to the value null, which has a value of 0 o
 
 </details>
 
+Закроем файл `miriscv_hammer_dpi.svh`.
+
+
+Перейдем на один уровень назад:
+
+```bash
+cd ..
+```
+
 ### Определение API со стороны C++
+
+Перейдем в директорию для сборки и запуска:
+
+```bash
+cd build
+```
 
 При помощи Verilator сгенерируем C/C++ заголовочный файл (мы это уже делали в разделе [DPI-C и Verilator + пример](#dpi-c-и-verilator--пример)).
 
 Выполним команду:
 
 ```bash
-verilator miriscv_hammer_dpi.svh -Mdir ./ --dpi-hdr-only
+verilator ../tb/miriscv_hammer_dpi.svh -Mdir ./ --dpi-hdr-only
 ```
 
 Откроем файл `Vmiriscv_hammer_dpi__Dpi.h`:
@@ -951,24 +977,28 @@ gedit Vmiriscv_hammer_dpi__Dpi.h
 #include "svdpi.h"
 ...
     // DPI IMPORTS
-    // DPI import at miriscv_hammer_dpi.svh:13:36
+    // DPI import at ../tb/miriscv_hammer_dpi.svh:13:36
     extern svBitVecVal hammer_get_PC(void* hammer);
-    // DPI import at miriscv_hammer_dpi.svh:30:36
+    // DPI import at ../tb/miriscv_hammer_dpi.svh:30:36
     extern svBitVecVal hammer_get_gpr(void* hammer, const svBitVecVal* gpr_id);
-    // DPI import at miriscv_hammer_dpi.svh:26:36
+    // DPI import at ../tb/miriscv_hammer_dpi.svh:26:36
     extern svBitVecVal hammer_get_insn_bits(void* hammer);
-    // DPI import at miriscv_hammer_dpi.svh:1:33
+    // DPI import at ../tb/miriscv_hammer_dpi.svh:22:32
+    extern const char* hammer_get_insn_str(void* hammer);
+    // DPI import at ../tb/miriscv_hammer_dpi.svh:1:33
     extern void* hammer_init(const char* target_binary);
-    // DPI import at miriscv_hammer_dpi.svh:5:30
+    // DPI import at ../tb/miriscv_hammer_dpi.svh:5:30
     extern void hammer_release(void* hammer);
-    // DPI import at miriscv_hammer_dpi.svh:17:30
+    // DPI import at ../tb/miriscv_hammer_dpi.svh:17:30
     extern void hammer_set_PC(void* hammer, const svBitVecVal* new_pc_value);
-    // DPI import at miriscv_hammer_dpi.svh:9:30
+    // DPI import at ../tb/miriscv_hammer_dpi.svh:9:30
     extern void hammer_single_step(void* hammer);
 ...
 ```
 
 Чуть подробнее остановимся на сгенерированном коде. Видим, что типу `chandle` из SystemVerilog соответствует тип универсального указателя `void*`. Разыменовывание такого указателя требует явного преобразования типов. Обратим также внимание, что типу `string` соответствует тип `const char*`, а типу `bit [31:0]` соответствует `svBitVecVal*`. Объявление типа `svBitVecVal` в Verilator производится в файле [`svdpi.h`](https://github.com/verilator/verilator/blob/522bead374d6b7b2adb316304126e5361b18bcf1/include/vltstd/svdpi.h#L96) и представляет собой `uint32_t`. То есть `svBitVecVal*` – указатель на 32-битное беззнаковое целое число.
+
+Закроем файл `Vmiriscv_hammer_dpi__Dpi.h`.
 
 Теперь определим реализацию каждого из методов на стороне C++. Создадим необходимый файл:
 
@@ -1105,7 +1135,7 @@ svBitVecVal hammer_get_gpr(void* hammer, const svBitVecVal* gpr_id) {
     Hammer *hammer_ptr;
     hammer_ptr = static_cast<Hammer *>(hammer);
     uint8_t id = static_cast<uint8_t>(*gpr_id);
-    return hammer_ptr->get_gpr(0, *id);
+    return hammer_ptr->get_gpr(0, id);
 }
 ```
 
@@ -1113,12 +1143,23 @@ svBitVecVal hammer_get_gpr(void* hammer, const svBitVecVal* gpr_id) {
 
 Закроем файл `hammer_dpi.cpp`.
 
+Перейдем на один уровень назад:
+
+```bash
+cd ..
+```
 
 ## Реализация обработки информации с RVFI и сравнения с эталонной моделью
 
 В разделе [Реализация получения информации с RVFI и ее подготовки для обработки](#реализация-получения-информации-с-rvfi-и-ее-подготовки-для-обработки) были созданы классы [транзакции RVFI](#транзакция-miriscv_rvfi_item), [монитора RVFI](#монитор-miriscv_rvfi_monitor), а также [интерфейс RVFI](#интерфейс-miriscv_rvfi_intf). Эти части [целого верификационного окружения](#структура-верификационного-окружения) служат для получения информации с интерфейса RVFI тестируемого ядра и отправки ее в другие компоненты для обработки.
 
 ### Класс проверки `miriscv_scoreboard`
+
+Перейдем в директорию исходных файлов верификационного окружения:
+
+```bash
+cd tb
+```
 
 Создадим заголовочный файл `miriscv_defines.svh`. В нем будут определены пользовательские типы, используемые в верификационном окружении.
 
@@ -1318,7 +1359,7 @@ class miriscv_test;
     ...
 
     function new(
-        virtual miriscv_mem_intf  mem_vif,
+        virtual miriscv_mem_intf  vif,
         virtual miriscv_rvfi_intf rvfi_vif,
     );
         ...
@@ -1439,7 +1480,7 @@ module miriscv_tb_top;
     ...
 
     // Interfaces
-    miriscv_mem_intf  mem_intf (clk, arstn);
+    miriscv_mem_intf  intf     (clk, arstn);
     miriscv_rvfi_intf rvfi_intf(clk, arstn);
 
     ...
@@ -1467,19 +1508,19 @@ module miriscv_tb_top;
       .boot_addr_i          ( `BOOT_ADDR               ),
 
       // Instruction memory interface
-      .instr_rvalid_i       ( mem_intf.instr_rvalid    ),
-      .instr_rdata_i        ( mem_intf.instr_rdata     ),
-      .instr_req_o          ( mem_intf.instr_req       ),
-      .instr_addr_o         ( mem_intf.instr_addr      ),
+      .instr_rvalid_i       ( intf.instr_rvalid        ),
+      .instr_rdata_i        ( intf.instr_rdata         ),
+      .instr_req_o          ( intf.instr_req           ),
+      .instr_addr_o         ( intf.instr_addr          ),
 
       // Data memory interface
-      .data_rvalid_i        ( mem_intf.data_rvalid     ),
-      .data_rdata_i         ( mem_intf.data_rdata      ),
-      .data_req_o           ( mem_intf.data_req        ),
-      .data_we_o            ( mem_intf.data_we         ),
-      .data_be_o            ( mem_intf.data_be         ),
-      .data_addr_o          ( mem_intf.data_addr       ),
-      .data_wdata_o         ( mem_intf.data_wdata      ),
+      .data_rvalid_i        ( intf.data_rvalid         ),
+      .data_rdata_i         ( intf.data_rdata          ),
+      .data_req_o           ( intf.data_req            ),
+      .data_we_o            ( intf.data_we             ),
+      .data_be_o            ( intf.data_be             ),
+      .data_addr_o          ( intf.data_addr           ),
+      .data_wdata_o         ( intf.data_wdata          ),
 
       // RVFI
       .rvfi_valid_o         ( rvfi_intf.rvfi_valid     ),
@@ -1511,7 +1552,7 @@ module miriscv_tb_top;
 endmodule
 ```
 
-Строку `test = new(mem_intf);` заменим на `test = new(mem_intf, rvfi_intf);`. Теперь в конструктор класса теста передается указатель на интерфейс RVFI.
+Строку `test = new(intf);` заменим на `test = new(intf, rvfi_intf);`. Теперь в конструктор класса теста передается указатель на интерфейс RVFI.
 
 
 ```SystemVerilog
@@ -1529,7 +1570,7 @@ module miriscv_tb_top;
         $dumpfile(dump);
         $dumpvars;
         // Create and run test
-        test = new(mem_intf, rvfi_intf);
+        test = new(intf, rvfi_intf);
         test.run();
     end
 
@@ -1563,6 +1604,7 @@ package miriscv_test_pkg;
     `include "miriscv_mem_agent.sv"
     `include "miriscv_rvfi_item.sv"
     `include "miriscv_rvfi_monitor.sv"
+    `include "miriscv_defines.svh"
     `include "miriscv_hammer_dpi.svh"
     `include "miriscv_scoreboard.sv"
     `include "miriscv_test.sv"
@@ -1600,7 +1642,7 @@ cd build
 Скопируем файл конфигурации генератора инструкций из эталонной реализации предыдущего занятия:
 
 ```bash
-cp ../02_aapg/golden/build/config.yaml ./
+cp ../../02_aapg/golden/build/config.yaml ./
 ```
 
 Создание файла конфигурации для MIRISCV было [подробно описано](../02_aapg/README.md#создание-файла-конфигурации-для-тестируемого-ядра) а предыдущем занятии.
@@ -1622,7 +1664,7 @@ code_start_address: 0x80000000
 Обратим внимание на строку:
 
 ```yaml
-total_instructions: 1000
+total_instructions: 10000
 ```
 
 Она определяет количество инструкций в тестовой программе.
@@ -1731,26 +1773,28 @@ mkdir -p out/verilator
 **Скомпилируем RTL тестируемого ядра и необходимые файлы верификационного окружения** при помощи Verilator (команда содержит большое количество аргументов, ниже разберем их значение):
 
 ```bash
-submodule_dir=../../../../submodules
+out=$(pwd)/out
+submodule_dir=$(pwd)/../../../submodules
 spike_install_dir=$(dirname "$(which spike)") 
 verilator -Wno-WIDTHEXPAND -Wno-WIDTHTRUNC -Wno-UNUSEDSIGNAL -Wno-UNUSEDPARAM -Wno-GENUNNAMED \
 -Wno-CASEINCOMPLETE -Wno-UNOPTFLAT -Wno-INFINITELOOP -Wno-MULTIDRIVEN -Wno-INITIALDLY \
 --relative-includes -j 1 --threads 1 --binary ${submodule_dir}/MIRISCV/miriscv/rtl/include/*.sv \
 ${submodule_dir}/MIRISCV/miriscv/rtl/*.sv  ../tb/miriscv_test_pkg.sv ../tb/miriscv_mem_intf.sv  \
-../tb/miriscv_rvfi_intf.sv ../tb/miriscv_tb_top.sv hammer_dpi.cpp +incdir+../tb/ +define+BOOT_ADDR=2147483648 \
---trace --trace-params --trace-structs --x-assign 0 -top-module miriscv_tb_top -Mdir out/verilator \
--CFLAGS "-I${spike_install_dir}/../include/softfloat -I${spike_install_dir}/../include \
--I${submodule_dir}/hammer-miriscv" -LDFLAGS "-Lout/hammer -l:libhammer.a -L${spike_install_dir}/../lib \
--l:libriscv.so -Wl,-rpath,${spike_install_dir}/../lib" &> out/verilator/compile.log
+../tb/miriscv_rvfi_intf.sv ../tb/miriscv_tb_top.sv $(pwd)/hammer_dpi.cpp +incdir+../tb/ \
++define+BOOT_ADDR=2147483648 --trace --trace-params --trace-structs --x-assign 0 -top-module \
+miriscv_tb_top -Mdir ${out}/verilator -CFLAGS "-I${spike_install_dir}/../include/softfloat \
+-I${spike_install_dir}/../include -I${submodule_dir}/hammer-miriscv" -LDFLAGS "-L${out}/hammer \
+-l:libhammer.a -L${spike_install_dir}/../lib -l:libriscv.so -Wl,-rpath,${spike_install_dir}/../lib" \
+&> ${out}/verilator/compile.log
 ```
 
-Перед выполнением компиляции определяются переменные `submodule_dir` и `spike_install_dir`, указывающие на директории сабмодулей и исходных файлов [Spike](#используемая-эталонная-модель-spike) соответственно.
+Перед выполнением компиляции определяются переменные `out`, `submodule_dir` и `spike_install_dir`, указывающие на директории выходную, сабмодулей и исходных файлов [Spike](#используемая-эталонная-модель-spike) соответственно.
 
 **Особое внимание стоит обратить** на аргумент `+define+BOOT_ADDR=2147483648`. `BOOT_ADDR` определяет стартовый счетчик команд для `Spike` (определяется методом `hammer_set_PC()` в методе `init()` [класса проверки](#класс-проверки-miriscv_scoreboard)) и тестируемого процессорного ядра (см. раздел [Удаление модуля трассировки и связанной с ним логики](#удаление-модуля-трассировки-и-связанной-с-ним-логики), сигнал ядра `boot_addr_i`). Также `BOOT_ADDR` определяет стартовый адрес в модели памяти окружения, по которому будет начата загрузка тестовой программы. Вспомним, что при конфигурации генератора инструкций в разделе [Генерация тестовой программы](#генерация-тестовой-программы) настройка `code_start_address` была определена как `0x80000000`, что равно `2147483648` в десятичном формате.
 
 Также **обратим внимание** на аргумент `-CFLAGS "-I${spike_install_dir}/../include/softfloat -I${spike_install_dir}/../include -I${submodule_dir}/hammer-miriscv"`, который определяет дополнительные аргументы для C/C++ компилятора. В нашем случае это дополнительные директории для поиска файлов директивы \`include. Это директории с заголовочными файлами Spike и `Hammer`.
 
-И наконец **обратим внимание** на аргумент `-LDFLAGS "-Lout/hammer -l:libhammer.a -L${spike_install_dir}/../lib -l:libriscv.so -Wl,-rpath,${spike_install_dir}/../lib"`. Он определяет дополнительные аргументы для линковщика объектных файлов, скомпилированных компилятором. Необходимо подключить библиотеку `Hammer`, [скомпилированную ранее](#компиляция), и библиотеку Spike `libriscv.so`, компилируемую при установке Spike.
+И наконец **обратим внимание** на аргумент `-LDFLAGS "-L${out}/hammer -l:libhammer.a -L${spike_install_dir}/../lib -l:libriscv.so -Wl,-rpath,${spike_install_dir}/../lib"`. Он определяет дополнительные аргументы для линковки уже скомпилированных объектных файлов. Необходимо подключить библиотеку `Hammer` `libhammer.a`, [скомпилированную ранее](#компиляция), и библиотеку Spike `libriscv.so`, компилируемую при установке Spike.
 
 <details>
   <summary>Если вам интересен разбор всех аргументов, переданных в Verilator в ходе компиляции</summary>
@@ -1775,7 +1819,7 @@ ${submodule_dir}/MIRISCV/miriscv/rtl/*.sv  ../tb/miriscv_test_pkg.sv ../tb/miris
 - `../tb/miriscv_tb_top.sv` – топ-модуль верификационного окружения;
 - `hammer_dpi.cpp` – имя [файла с реализацией DPI-C методов для вызова библиотеки `Hammer`](#определение-api-со-стороны-c);
 - `-top-module miriscv_tb_top` – определение топ-модуля для симуляции (в нашем случае это топ-файл верификационного окружения);
-- `-Mdir out/verilator` – определяет выходную директорию артефактов компиляции.
+- `-Mdir ${out}/verilator` – определяет выходную директорию артефактов компиляции.
 
 ---
 
@@ -1803,7 +1847,7 @@ gedit out/verilator/compile.log
 Запустим симуляцию:
 
 ```bash
-out/verilator/Vmiriscv_tb_top +bin=out/aapg/bin/program.bin +elf=out/aapg/bin/program.bin \
+out/verilator/Vmiriscv_tb_top +bin=out/aapg/bin/program.bin +elf=out/aapg/bin/program.riscv \
     +timeout_in_cycles=100000 +dump=out/verilator/run.vcd +signature_addr=80100000 \
             &> out/verilator/run.log
 ```
@@ -1845,11 +1889,23 @@ Amount of retired instructions checked: 3991
 
 И все же чего-то не хватает. А не хватает нам, дорогой читатель, отладочной информации, чтобы убедиться, что сранение с эталонной моделью действительно производится. Добавим ее.
 
+Переходим на один уровень назад:
+
+```bash
+cd ..
+```
+
 ### Добавление отладочной информации
 
 Чтобы убедиться, что сравнение с эталонной моделью действительно производится, добавим сохранение информации о сравнениях в отдельный лог-файл. В лог-файле симуляции при этом будет минимальная информация для того, чтобы сделать вывод об успешности тестирования. И при этом будет присутствовать возможность успокоить себя, просмотрев другой лог-файл, генерацию которого мы и реализуем.
 
 #### Класс `miriscv_compare_logger`
+
+Перейдем в директорию исходных файлов верификационного окружения:
+
+```bash
+cd tb
+```
 
 Для генерации лог-файла сравнения с эталонной моделью создадим специальный класс с говорящим названием `miriscv_compare_logger`.
 
@@ -1995,6 +2051,38 @@ endclass
 
 Закроем файл `miriscv_scoreboard.sv`.
 
+### Добавление `miriscv_compare_logger` в пакет теста `miriscv_test_pkg`
+
+Подключим в пакет теста `miriscv_compare_logger`.
+
+Файл можно открыть в любом редакторе. Открываем при помощи gedit:
+
+```bash
+gedit miriscv_test_pkg.sv
+```
+
+Добавим в файл подключение `miriscv_compare_logger.sv`. Итоговый файл будет выглядеть следующим образом:
+
+```SystemVerilog
+package miriscv_test_pkg;
+
+    `include "mem_model.sv"
+    `include "miriscv_mem_item.sv"
+    `include "miriscv_mem_seq.sv"
+    `include "miriscv_mem_monitor.sv"
+    `include "miriscv_mem_driver.sv"
+    `include "miriscv_mem_agent.sv"
+    `include "miriscv_rvfi_item.sv"
+    `include "miriscv_rvfi_monitor.sv"
+    `include "miriscv_defines.svh"
+    `include "miriscv_hammer_dpi.svh"
+    `include "miriscv_compare_logger.sv"
+    `include "miriscv_scoreboard.sv"
+    `include "miriscv_test.sv"
+
+endpackage
+```
+
 ### Осознанное внедрение ошибок
 
 Зачастую после проектирования окружения инженер относится с некоторой степенью скептицизма к первой версии и очень настораживается, когда симуляция завершается успешно без единой ошибки. Мы имеем ситуацию, когда и верификационное окружение, и проверяемый дизайн не содержат ошибок. Однако в реальности так бывает редко.
@@ -2024,7 +2112,19 @@ ALU_SLL: alu_shift = alu_port_a_i >> shift;
 
 Сохраним и закроем файл. Теперь ядро при получении инструкции сдвига влево (`sll`, `slli`) будет выполнять сдвиг вправо. Еще раз выполним команды для верификации.
 
+Переходим на один уровень назад:
+
+```bash
+cd ..
+```
+
 #### Повторный запуск
+
+Перейдем в директорию для сборки и запуска:
+
+```bash
+cd build
+```
 
 Генерация тестовой программы:
 
@@ -2047,23 +2147,25 @@ riscv32-unknown-elf-objcopy -O binary out/aapg/bin/program.riscv \
 Компиляция RTL и тестового окружения:
 
 ```bash
-submodule_dir=../../../../submodules
+out=$(pwd)/out
+submodule_dir=$(pwd)/../../../submodules
 spike_install_dir=$(dirname "$(which spike)") 
 verilator -Wno-WIDTHEXPAND -Wno-WIDTHTRUNC -Wno-UNUSEDSIGNAL -Wno-UNUSEDPARAM -Wno-GENUNNAMED \
 -Wno-CASEINCOMPLETE -Wno-UNOPTFLAT -Wno-INFINITELOOP -Wno-MULTIDRIVEN -Wno-INITIALDLY \
 --relative-includes -j 1 --threads 1 --binary ${submodule_dir}/MIRISCV/miriscv/rtl/include/*.sv \
 ${submodule_dir}/MIRISCV/miriscv/rtl/*.sv  ../tb/miriscv_test_pkg.sv ../tb/miriscv_mem_intf.sv  \
-../tb/miriscv_rvfi_intf.sv ../tb/miriscv_tb_top.sv hammer_dpi.cpp +incdir+../tb/ +define+BOOT_ADDR=2147483648 \
---trace --trace-params --trace-structs --x-assign 0 -top-module miriscv_tb_top -Mdir out/verilator \
--CFLAGS "-I${spike_install_dir}/../include/softfloat -I${spike_install_dir}/../include \
--I${submodule_dir}/hammer-miriscv" -LDFLAGS "-Lout/hammer -l:libhammer.a -L${spike_install_dir}/../lib \
--l:libriscv.so -Wl,-rpath,${spike_install_dir}/../lib" &> out/verilator/compile.log
+../tb/miriscv_rvfi_intf.sv ../tb/miriscv_tb_top.sv $(pwd)/hammer_dpi.cpp +incdir+../tb/ \
++define+BOOT_ADDR=2147483648 --trace --trace-params --trace-structs --x-assign 0 -top-module \
+miriscv_tb_top -Mdir ${out}/verilator -CFLAGS "-I${spike_install_dir}/../include/softfloat \
+-I${spike_install_dir}/../include -I${submodule_dir}/hammer-miriscv" -LDFLAGS "-L${out}/hammer \
+-l:libhammer.a -L${spike_install_dir}/../lib -l:libriscv.so -Wl,-rpath,${spike_install_dir}/../lib" \
+&> ${out}/verilator/compile.log
 ```
 
 Запуск симуляции:
 
 ```bash
-out/verilator/Vmiriscv_tb_top +bin=out/aapg/bin/program.bin +elf=out/aapg/bin/program.bin \
+out/verilator/Vmiriscv_tb_top +bin=out/aapg/bin/program.bin +elf=out/aapg/bin/program.riscv \
     +timeout_in_cycles=100000 +dump=out/verilator/run.vcd +signature_addr=80100000 \
         +compare_log=out/verilator/step_and_compare.log &> out/verilator/run.log
 ```
@@ -2226,7 +2328,9 @@ gedit out/aapg/objdump/program.objdump
 
 Видим, что при значении в регистре `t0` (он же `x5`) меньше нуля происходит переход по адресу `800000a0`, что мы наблюдаем в Spike. MIRISCV же начинает выполнять программу далее... и что же мы видим? Запись 1 по адресу `80100000` – это как раз адрес, по которому пишется 1 в случае завершения программы. Интересно, почему код сгенерирован именно так. Остался последний шаг до истины!
 
-Закроем файл `program.objdump` и откроем файл начала тестовой программы, но в ассемблерном виде (файл был упомянут в разделе [Генерация тестовой программы](#генерация-тестовой-программы)):
+Закроем файл `program.objdump`.
+
+Откроем файл начала тестовой программы, но в ассемблерном виде (файл был упомянут в разделе [Генерация тестовой программы](#генерация-тестовой-программы)):
 
 ```bash
 gedit out/aapg/common/crt.S
