@@ -133,13 +133,13 @@ endclass
 
 Для тестирования процессорного ядра будет использоваться эталонная модель [Spike](https://github.com/riscv-software-src/riscv-isa-sim/tree/887d02e42124ddc86476dfdf4aad4be8ba7f0aef), написанная на языке C. В настоящее время эта модель является самой популярной открытой моделью.
 
-На момент создания данного практического задания в репозитории набора тестов присутствует 1017 закрытых и 49 открытых pull requests, последний из которых был создан меньше месяца назад.
+На момент создания данного практического задания в репозитории присутствует 1017 закрытых и 49 открытых pull requests, последний из которых был создан меньше месяца назад.
 
 ![](../../doc/pic/hammer_0.png)
 
 Для тестирования процессорного ядра будет использоваться генератор случайных RISC-V инструкций [APPG](https://gitlab.com/shaktiproject/tools/aapg/-/tree/7ce4a9073a040bbc784edfd1c8a7b21f269f7766), написанный на языке Python. Генератор поддерживает набор расширений `RV32IMAFDC_Zb_Zicsr` для 32-битных машин и `RV64IMAFDC_Zb_Zicsr` для 64-битных машин. Документация на генератор доступна по [ссылке](https://gitlab.com/shaktiproject/tools/aapg/-/wikis/Wiki-AAPG-%5B2.2.2%5D).
 
-В настоящее время самым популярным генератором случайных RISC-V инструкций является [RISCV-DV](https://github.com/chipsalliance/riscv-dv). Однако его использование возможно только при наличии доступа к коммерческим симуляторам, таким как [Mentor QuestaSim](https://eda.sw.siemens.com/en-US/ic/questa/simulation/advanced-simulator/), [Synopsys VCS](https://www.synopsys.com/verification/simulation/vcs.html), [Cadence Xcelium](https://www.cadence.com/en_US/home/tools/system-design-and-verification/simulation-and-testbench-verification/xcelium-simulator.html).
+В настоящее время самым популярным генератором случайных RISC-V инструкций является [RISCV-DV](https://github.com/chipsalliance/riscv-dv). Однако его использование возможно только при наличии доступа к коммерческим симуляторам, таким как [Siemens QuestaSim](https://eda.sw.siemens.com/en-US/ic/questa-one/simulation/questa-one-sim/), [Synopsys VCS](https://www.synopsys.com/verification/simulation/vcs.html), [Cadence Xcelium](https://www.cadence.com/en_US/home/tools/system-design-and-verification/simulation-and-testbench-verification/xcelium-simulator.html).
 
 Одной из важных особенностей курса является **использование только открытого ПО**, так что в рамках данного занятия был сделан выбор в пользу менее совершенного, но полностью отрытого [AAPG](https://gitlab.com/shaktiproject/tools/aapg/-/tree/7ce4a9073a040bbc784edfd1c8a7b21f269f7766), обладающего, тем не менее, внушительным набором поддерживаемых расширений.
 
@@ -191,11 +191,11 @@ endclass
   <img src="../../doc/pic/hammer_1.svg" width=600></img>
 </p>
 
-Класс [`miriscv_mem_monitor`](#монитор-miriscv_mem_monitor) отслеживает запросы ядра в память и отправляет информацию в класс последовательности [`miriscv_mem_seq`](#последовательность-miriscv_mem_seq), в которой находится указатель (object handle)[^4] на универсальную модель памяти [`mem_model`](#модель-памяти-mem_model). Последовательность, в свою очередь, формирует транзакции [`miriscv_mem_item`](#транзакция-miriscv_mem_item) для класса [`miriscv_mem_driver`](#драйвер-miriscv_mem_driver), который отвечает за взаимодействие окружения с сигналами процессорного ядра.
+Класс `miriscv_mem_monitor` отслеживает запросы ядра в память и отправляет информацию в класс последовательности `miriscv_mem_seq`, в которой находится указатель (object handle)[^4] на универсальную модель памяти `mem_model`. Последовательность, в свою очередь, формирует транзакции `miriscv_mem_item` для класса `miriscv_mem_driver`, который отвечает за взаимодействие окружения с сигналами процессорного ядра.
 
-Классы [`miriscv_mem_monitor`](#монитор-miriscv_mem_monitor) и [`miriscv_mem_driver`](#драйвер-miriscv_mem_driver) инкапсулированы в класс [`miriscv_mem_agent`](#агент-miriscv_mem_agent), который, в свою очередь, находится в классе [`miriscv_test`](#тест-miriscv_test), который создает и инициализирует модель памяти, определяет тестовый сценарий.
+Классы `miriscv_mem_monitor` и `miriscv_mem_driver` инкапсулированы в класс `miriscv_mem_agent`, который, в свою очередь, находится в классе `miriscv_test`, который создает и инициализирует модель памяти, определяет тестовый сценарий.
 
-Также класс теста содержит в себе монитор интерфейса RVFI [`miriscv_rvfi_monitor`](#монитор-miriscv_rvfi_monitor) и класс проверки [`miriscv_scoreboard`](#класс-проверки-miriscv_scoreboard). Класс проверки содержит в себе указатель на модель, с которым при помощи [библиотеки `Hammer`](https://github.com/rivosinc/hammer/tree/6d9fac96407149a1a533cdd3f63f6bbd96614ffa) через DPI-C методы взаимодействует с [эталонной моделью Spike](#используемая-эталонная-модель-spike).
+Также класс теста содержит в себе монитор интерфейса RVFI [`miriscv_rvfi_monitor`](#монитор-miriscv_rvfi_monitor) и класс проверки [`miriscv_scoreboard`](#класс-проверки-miriscv_scoreboard). Класс проверки содержит в себе указатель на модель, с которым при помощи [библиотеки `Hammer`](https://github.com/rivosinc/hammer/tree/6d9fac96407149a1a533cdd3f63f6bbd96614ffa) через DPI-C методы взаимодействует с [эталонной моделью Spike](#используемая-эталонная-модель-spike-и-генератор-случайных-инструкций-aapg).
 
 Проектированию новых компонентов (относительно окружения из [предыдущего занятия](../02_aapg)) далее будут отведены отдельные разделы. А теперь давайте рассмотрим более подробно механизм подключения тестового сценария к главному модулю верификационного окружения. Структура представлена на изображении ниже:
 
@@ -203,7 +203,7 @@ endclass
   <img src="../../doc/pic/hammer_2.svg" width=600></img>
 </p>
 
-Компоненты окружения [`miriscv_mem_monitor`](#монитор-miriscv_mem_monitor) и [`miriscv_mem_driver`](#драйвер-miriscv_mem_driver) взаимодействуют с главным модулем ядра [`miriscv_core`](https://github.com/riscv-tests-intro/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/miriscv_core.sv) при помощи интерфейса[^5] `miriscv_mem_intf`. Компонент [`miriscv_rvfi_monitor`](#монитор-miriscv_rvfi_monitor) взаимодействует с главным модулем ядра при помощи интерфейса [`miriscv_rvfi_intf`](#интерфейс-miriscv_rvfi_intf). В топ-модуле верификационного окружения `miriscv_tb_top` интерфейсы подключаются к сигналам топ-модуля ядра, а ссылки на интерфейсы передаются в соответствующие компоненты окружения.
+Компоненты окружения `miriscv_mem_monitor` и `miriscv_mem_driver` взаимодействуют с главным модулем ядра [`miriscv_core`](https://github.com/riscv-tests-intro/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/miriscv_core.sv) при помощи интерфейса[^5] `miriscv_mem_intf`. Компонент [`miriscv_rvfi_monitor`](#монитор-miriscv_rvfi_monitor) взаимодействует с главным модулем ядра при помощи интерфейса [`miriscv_rvfi_intf`](#интерфейс-miriscv_rvfi_intf). В топ-модуле верификационного окружения `miriscv_tb_top` интерфейсы подключаются к сигналам топ-модуля ядра, а ссылки на интерфейсы передаются в соответствующие компоненты окружения.
 
 
 ## Подготовка
@@ -369,7 +369,7 @@ class miriscv_rvfi_item;
 endclass
 ```
 
-Класс будет содержать поля, соответствующие проводам интерфейса RVFI, согласно [спецификации]((https://github.com/YosysHQ/riscv-formal/blob/main/docs/source/rvfi.rst)) данного интерфейса.
+Класс будет содержать поля, соответствующие проводам интерфейса RVFI, согласно [документации]((https://github.com/YosysHQ/riscv-formal/blob/main/docs/source/rvfi.rst)) данного интерфейса.
 
 Закроем файл `miriscv_rvfi_item.sv`.
 
@@ -533,7 +533,7 @@ end
 while(vif.rvfi_valid === 1'b0);
 ```
 
-Иными словами, считывание сигналов с интерфейса RVFI происходит при активном уровне сигнала `rvfi_valid`. Ведь, согласно спецификации на RVFI, сигналы интерфейса являются актуальными [только в случае активного уровня данного сигнала](https://github.com/YosysHQ/riscv-formal/blob/6141ed8f4ecac24a7c9298bd970822274b0e2865/docs/source/rvfi.rst?plain=1#L35).
+Иными словами, считывание сигналов с интерфейса RVFI происходит при активном уровне сигнала `rvfi_valid`. Ведь, согласно документации на RVFI, сигналы интерфейса являются актуальными [только в случае активного уровня данного сигнала](https://github.com/YosysHQ/riscv-formal/blob/6141ed8f4ecac24a7c9298bd970822274b0e2865/docs/source/rvfi.rst?plain=1#L35).
 
 Закроем файл `miriscv_rvfi_monitor.sv`.
 
@@ -579,7 +579,9 @@ class Hammer {
 
 Если проанализировать файлы [`hammer/hammer.h`](https://github.com/rivosinc/hammer/blob/6d9fac96407149a1a533cdd3f63f6bbd96614ffa/hammer.h) и [`hammer/hammer.cpp`](https://github.com/rivosinc/hammer/blob/6d9fac96407149a1a533cdd3f63f6bbd96614ffa/hammer.cpp), то можно заметить отсутствие метода для получения инструкции, которая выполняется Spike на текущем счетчике команд. Добавим этот метод.
 
-Добавим определение метода. Откроем заголовочный файл [`hammer/hammer.h`](https://github.com/rivosinc/hammer/blob/6d9fac96407149a1a533cdd3f63f6bbd96614ffa/hammer.h). Файл можно открыть в любом редакторе. Открываем при помощи gedit:
+Добавим определение метода. Откроем заголовочный файл `hammer/hammer.h`.
+
+Файл можно открыть в любом редакторе. Открываем при помощи gedit:
 
 ```bash
 gedit ../../submodules/hammer/hammer.h
@@ -599,7 +601,9 @@ uint64_t get_insn_bits(uint8_t hart_id);
 
 Закроем файл `hammer/hammer.h`.
 
-Теперь добавим реализацию метода. Откроем файл [`hammer/hammer.cpp`](https://github.com/rivosinc/hammer/blob/6d9fac96407149a1a533cdd3f63f6bbd96614ffa/hammer.cpp). Файл можно открыть в любом редакторе. Открываем при помощи gedit:
+Теперь добавим реализацию метода. Откроем файл `hammer/hammer.cpp`.
+
+Файл можно открыть в любом редакторе. Открываем при помощи gedit:
 
 ```bash
 gedit ../../submodules/hammer/hammer.cpp
@@ -718,7 +722,11 @@ cd ..
 
 ### Введение в DPI-C
 
-Для взаимодействия SystemVerilog окружения с библиотеками, скомпилированными из C или C++ кода, в SystemVerilog присутствует механизм DPI-C. Автор рекомендует хороший открытый ознакомительный материал о SystemVerilog DPI-C: [SystemVerilog DPI Tutorial](https://www.doulos.com/knowhow/systemverilog/systemverilog-tutorials/systemverilog-dpi-tutorial/) от компании Doulos.
+Для взаимодействия SystemVerilog окружения с библиотеками, скомпилированными из C или C++ кода, в SystemVerilog присутствует механизм DPI-C.
+
+Автор рекомендует хорошие открытые ознакомительные материалы о SystemVerilog DPI-C:
+- [SystemVerilog DPI Tutorial](https://www.doulos.com/knowhow/systemverilog/systemverilog-tutorials/systemverilog-dpi-tutorial/) от компании Doulos;
+- [How to Call C-functions from SystemVerilog Using DPI-C](https://www.consulting.amiq.com/2019/01/30/how-to-call-c-functions-from-systemverilog-using-dpi-c/) от компании AMIQ Consulting.
 
 Для вызова C/C++ из SystemVerilog метод должен быть объявлен на стороне SystemVerilog, а также объявлен и реализован на стороне C/C++. Камнем преткновения чаще всего является совместимость типов SystemVerilog и C/C++. Инженеру не всегда является очевидным какой тип в C/C++ соответствует типу в SystemVerilog. Решение данной проблемы в том числе будет рассмотрено далее.
 
@@ -1789,7 +1797,7 @@ miriscv_tb_top -Mdir ${out}/verilator -CFLAGS "-I${spike_install_dir}/../include
 &> ${out}/verilator/compile.log
 ```
 
-Перед выполнением компиляции определяются переменные `out`, `submodule_dir` и `spike_install_dir`, указывающие на директории выходную, сабмодулей и исходных файлов [Spike](#используемая-эталонная-модель-spike) соответственно.
+Перед выполнением компиляции определяются переменные `out`, `submodule_dir` и `spike_install_dir`, указывающие на директории выходную, сабмодулей и исходных файлов [Spike](#используемая-эталонная-модель-spike-и-генератор-случайных-инструкций-aapg) соответственно.
 
 **Особое внимание стоит обратить** на аргумент `+define+BOOT_ADDR=2147483648`. `BOOT_ADDR` определяет стартовый счетчик команд для `Spike` (определяется методом `hammer_set_PC()` в методе `init()` [класса проверки](#класс-проверки-miriscv_scoreboard)) и тестируемого процессорного ядра (см. раздел [Удаление модуля трассировки и связанной с ним логики](#удаление-модуля-трассировки-и-связанной-с-ним-логики), сигнал ядра `boot_addr_i`). Также `BOOT_ADDR` определяет стартовый адрес в модели памяти окружения, по которому будет начата загрузка тестовой программы. Вспомним, что при конфигурации генератора инструкций в разделе [Генерация тестовой программы](#генерация-тестовой-программы) настройка `code_start_address` была определена как `0x80000000`, что равно `2147483648` в десятичном формате.
 
@@ -2092,7 +2100,7 @@ endpackage
 
 #### Модификация RTL MIRISCV
 
-Откроем исходный файл арифметико-логического устройства (АЛУ) тестируемого ядра [`miriscv_alu.sv`](https://github.com/riscv-tests-intro/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77/miriscv/rtl/miriscv_alu.sv):
+Откроем исходный файл арифметико-логического устройства (АЛУ) тестируемого ядра `miriscv_alu.sv`:
 
 
 ```bash
@@ -2395,7 +2403,7 @@ make clean && make -s COMPARE_LOG=step_and_compare.log
 
 ## Выводы
 
-В ходе данного практического занятия был освоен подход к верификации процессорных ядер, основанный на [синхронном сравнении с эталонной моделью](../../theory/04_rgen.md) на примере RISC-V ядра с открытым исходным кодом [MIRISCV](https://github.com/riscv-tests-intro/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77).
+В ходе данного практического занятия был освоен подход к верификации процессорных ядер, основанный на [синхронном сравнении с эталонной моделью](../../theory/05_advanced.md#синхронное-сравнение) на примере RISC-V ядра с открытым исходным кодом [MIRISCV](https://github.com/riscv-tests-intro/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77).
 
 [^1]: SystemVerilog DPI-C – механизм, позволяющий осуществлять вызов C/C++ кода непосредственно из SystemVerilog (и SystemVerilog из C/C++ кода) в ходе симуляции. Хорошие открытые ознакомительные материалы о SystemVerilog DPI-C: [SystemVerilog DPI Tutorial](https://www.doulos.com/knowhow/systemverilog/systemverilog-tutorials/systemverilog-dpi-tutorial/) и [How to Call C-functions from SystemVerilog Using DPI-C](https://www.consulting.amiq.com/2019/01/30/how-to-call-c-functions-from-systemverilog-using-dpi-c/).
 
