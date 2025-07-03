@@ -89,7 +89,7 @@ git -c submodule."submodules/riscv-gnu-toolchain".update=none submodule update -
 
 ### Использование виртуальной машины
 
-Вы можете воспользоваться [предоставляемым образом виртуальной машины](https://disk.yandex.ru/d/daWcIQlydsHBbA) для [VirtualBox](#https://www.virtualbox.org/) Это [конкретная версия Ubuntu 22.04 LTS](https://disk.yandex.ru/d/RVNDosRvrKFHSA), со всем необходимым установленным ПО.
+Вы можете воспользоваться [предоставляемым образом виртуальной машины](https://disk.yandex.ru/d/we3X3gvmwhQF9w) для [VirtualBox](#https://www.virtualbox.org/) Это [конкретная версия Ubuntu 22.04 LTS](https://disk.yandex.ru/d/RVNDosRvrKFHSA), со всем необходимым установленным ПО.
 
 Руководство по скачиванию и настройке виртуальной машины  находится в файле [`doc/vm.md`](./doc/vm.md). **При использовании виртуальной машины дополнительно никакое ПО устанавливать не нужно.**
 
