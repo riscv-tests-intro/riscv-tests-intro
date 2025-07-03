@@ -28,3 +28,9 @@
 [submodule "submodules/aapg-miriscv"]
 	path = submodules/aapg-miriscv
 	url = https://github.com/riscv-tests-intro/aapg.git
+[submodule "submodules/hammer"]
+	path = submodules/hammer
+	url = https://github.com/rivosinc/hammer.git
+[submodule "submodules/hammer-miriscv"]
+	path = submodules/hammer-miriscv
+	url = https://github.com/riscv-tests-intro/hammer.git

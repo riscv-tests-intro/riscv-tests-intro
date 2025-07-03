@@ -56,7 +56,7 @@ git -c submodule."submodules/riscv-gnu-toolchain".update=none submodule update -
 
 ## Общее описание
 
-**Курс знакомит с основными подходами к функциональной верификации RISC-V ядер**, использующимися в индустрии микроэлектроники в настоящее время. Ядром курса являются [практические занятия](./practice/), реализующие полный маршрут 3 различных подходов к тестированию (от простого к сложному). Однако, без базовых теоретических знаний осознанно их выполнить непросто, так что в курсе представлен блок [теоретического материала](./theory/), формирующий контекст восприятия.
+**Курс знакомит с основными подходами к функциональной верификации RISC-V ядер**, использующимися в индустрии микроэлектроники в настоящее время. Ядром курса являются [практические занятия](./practice/), реализующие полный маршрут 4 различных подходов к тестированию (от простого к сложному). Однако, без базовых теоретических знаний осознанно их выполнить непросто, так что в курсе представлен блок [теоретического материала](./theory/), формирующий контекст восприятия.
 
 **Интересной особенностью** курса является [раздел bug hunting](./bughunt/), который представляет собой сборник смоделированных и подробно разобранных ситуаций обнаружения и исправления ошибок в RTL-описании процессорого ядра с открытым исходным кодом [MIRISCV](https://github.com/riscv-tests-intro/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77).
 
@@ -89,7 +89,7 @@ git -c submodule."submodules/riscv-gnu-toolchain".update=none submodule update -
 
 ### Использование виртуальной машины
 
-Вы можете воспользоваться [предоставляемым образом виртуальной машины](https://disk.yandex.ru/d/daWcIQlydsHBbA) для [VirtualBox](#https://www.virtualbox.org/) Это [конкретная версия Ubuntu 22.04 LTS](https://disk.yandex.ru/d/RVNDosRvrKFHSA), со всем необходимым установленным ПО.
+Вы можете воспользоваться [предоставляемым образом виртуальной машины](https://disk.yandex.ru/d/we3X3gvmwhQF9w) для [VirtualBox](#https://www.virtualbox.org/) Это [конкретная версия Ubuntu 22.04 LTS](https://disk.yandex.ru/d/RVNDosRvrKFHSA), со всем необходимым установленным ПО.
 
 Руководство по скачиванию и настройке виртуальной машины  находится в файле [`doc/vm.md`](./doc/vm.md). **При использовании виртуальной машины дополнительно никакое ПО устанавливать не нужно.**
 
@@ -98,7 +98,7 @@ git -c submodule."submodules/riscv-gnu-toolchain".update=none submodule update -
 Вы можете вручную **установить следущее ПО** на свой дистрибутив Linux:
 
 - [Генератор случайных инструкций RISC-V AAPG `2d7d40f`](https://github.com/riscv-tests-intro/aapg/tree/2d7d40feb8ce7ae20ccbe8225ed9947c188e9cc3);
-- [Программная модель RISC-V Spike ISS `00dfa28`](https://github.com/riscv-software-src/riscv-isa-sim/tree/00dfa28cd71326a9b553052bf0160cb76f0e7e07);
+- [Программная модель RISC-V Spike ISS `887d02e`](https://github.com/riscv-software-src/riscv-isa-sim/tree/887d02e42124ddc86476dfdf4aad4be8ba7f0aef);
 - [ПО riscv-gnu-toolchain `6d7b5b7`](https://github.com/riscv-collab/riscv-gnu-toolchain/tree/6d7b5b720f6c6a89b4f22c62b22c1d0ebc2dc353);
 - [Verilator 5.024 `522bead`](https://github.com/verilator/verilator/tree/522bead374d6b7b2adb316304126e5361b18bcf1);
 - [GTKWave](https://gtkwave.sourceforge.net/).
@@ -124,6 +124,7 @@ git -c submodule."submodules/riscv-gnu-toolchain".update=none submodule update -
 5. [Тема 04: RISC-V верификация: Сравнение с эталонной моделью](./theory/04_rgen.md)
     - [Практическое занятие 02: Cравнение с эталонной моделью](./practice/02_aapg/)
 6. [Тема 05: RISC-V верификация: Модифицированное сравнение с эталонной моделью](./theory/05_advanced.md)
+    - [Практическое занятие 03: Синхронное сравнение с эталонной моделью](./practice/03_hammer/)
 
 **По завершению** [теоретического](./theory/) и [практического](./practice/) разделов рекомендуется освоить раздел [bug hunting](./bughunt/). В каждом из его занятий моделируется поиск, локализация и исправление ошибки в RTL [MIRISCV](https://github.com/riscv-tests-intro/MIRISCV/tree/b510b308addc4a7271e36f2a348bd18bf24c1d77) при помощи различных подходов к верификации, представленных в данном курсе.
 

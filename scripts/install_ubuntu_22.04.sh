@@ -18,9 +18,10 @@ done
 # Common
 #-----------------------------------------------------------------
 
-sudo apt-get install git make gcc g++ python3 python3-pip \
-libyaml-dev libpython2.7-dev -y
-sudo pip install pathlib3x typeguard typing_utils
+sudo apt-get install git make gcc g++ clang python3 \
+python3-pip libyaml-dev libpython2.7-dev -y
+sudo pip install pathlib3x typeguard typing_utils \
+pybind11 meson==1.8.1
 
 
 #-----------------------------------------------------------------
@@ -85,7 +86,31 @@ source /etc/profile
 
 # Go back
 
-cd ../..
+cd ..
+
+# Remove build
+
+sudo rm -rf build
+mkdir build
+cd build
+
+# Configure for 64 bit
+
+../configure --prefix=$INSTALL_DIR/riscv-gnu-toolchain-64 \
+--with-arch=rv64gcv_zicsr --with-abi=lp64d
+
+# Build and install
+
+sudo make -j $(nproc)
+
+# Add to PATH
+
+echo "PATH=$INSTALL_DIR/riscv-gnu-toolchain-64/bin"':$PATH' | sudo tee -a /etc/profile
+source /etc/profile
+
+# Go back
+
+cd ../../..
 
 
 #-----------------------------------------------------------------
@@ -107,7 +132,7 @@ cd build
 
 # Configure
 
-../configure --prefix=$INSTALL_DIR/spike
+../configure --without-boost --without-boost-asio --without-boost-regex --prefix=$INSTALL_DIR/spike
 
 # Build
 
@@ -124,7 +149,7 @@ source /etc/profile
 
 # Go back
 
-cd ../..
+cd ../../..
 
 
 #-----------------------------------------------------------------
