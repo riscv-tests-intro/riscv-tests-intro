@@ -20,7 +20,7 @@ module miriscv_tb_top;
     logic [31:0] data_wdata;
     logic [31:0] data_addr;
     logic        data_we;
-    logic [31:0] data_be;
+    logic [ 3:0] data_be;
 
     // Main memory handle
     logic [31:0] mem [32];
