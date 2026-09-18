@@ -27,7 +27,7 @@
 Для того, чтобы работать с репозиторием (выполнять практические занятия, модифицировать код и т.д.), необходимо склонировать его ([на предоставляемую виртуальную машину](#использование-виртуальной-машины) или на иной дистрибутив Linux) и обновить сабмодули.
 
 ```bash
-git clone https://github.com/serge0699/riscv-tests-intro.git
+git clone https://github.com/riscv-tests-intro/riscv-tests-intro.git
 cd riscv-tests-intro
 git -c submodule."submodules/riscv-gnu-toolchain".update=none submodule update --recursive --init && git submodule update --init
 ```
@@ -52,7 +52,7 @@ git -c submodule."submodules/riscv-gnu-toolchain".update=none submodule update -
 
 Разработка курса поддержана в рамках конкурса грантов [Альянса RISC-V](https://riscv-alliance.ru/).
 
-Материалы допускаются к использованию под лицензией [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.ru).
+Материалы допускаются к использованию под лицензией [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.ru).
 
 ## Общее описание
 
