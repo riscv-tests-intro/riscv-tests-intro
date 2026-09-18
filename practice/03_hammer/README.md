@@ -2421,7 +2421,7 @@ make clean && make -s COMPARE_LOG=step_and_compare.log
 
 [^8]: `elf` – формат исполняемого двоичного файла [UNIX-подобных](https://en.wikipedia.org/wiki/Unix-like) операционных систем.
 
-[^9]: В одной из лабораторных работ открытого курса [Архитектуры процессорных систем](https://github.com/MPSU/APS) НИУ МИЭТ представлен [отличный пример скрипта линковки с подробными комментариями](https://github.com/MPSU/APS/tree/master/Labs/14.%20Programming#%D1%84%D0%B0%D0%B9%D0%BB-%D0%BF%D0%B5%D1%80%D0%B2%D0%B8%D1%87%D0%BD%D1%8B%D1%85-%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4-%D0%BF%D1%80%D0%B8-%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B5-startups). Также вы можете ознакомиться с [открытым обучающим ресурсом по линкер скриптам](https://users.informatik.haw-hamburg.de/~krabat/FH-Labor/gnupro/5_GNUPro_Utilities/c_Using_LD/ldLinker_scripts.html).
+[^9]: В одной из лабораторных работ открытого курса [Архитектуры процессорных систем](https://github.com/MPSU/APS) НИУ МИЭТ представлен [отличный пример скрипта линковки с подробными комментариями](https://github.com/MPSU/APS/tree/master/Labs/14.%20Programming#%D1%84%D0%B0%D0%B9%D0%BB-%D0%BF%D0%B5%D1%80%D0%B2%D0%B8%D1%87%D0%BD%D1%8B%D1%85-%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4-%D0%BF%D1%80%D0%B8-%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B5-startups). Также вы можете ознакомиться с [открытым обучающим ресурсом по линкер скриптам](https://web.archive.org/web/20210915190239/https://users.informatik.haw-hamburg.de/~krabat/FH-Labor/gnupro/5_GNUPro_Utilities/c_Using_LD/ldLinker_scripts.html).
 
 [^10]: Дизассемблирование – процесс конвертации машинного кода в ассемблерный. [Простая, но полезная заметка про дизассемблер от университета Loyola Marymount](https://cs.lmu.edu/~ray/notes/assemdisassem/).
 

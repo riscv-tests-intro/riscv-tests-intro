@@ -93,7 +93,7 @@
 
 В 2022 году [поступил в продажу первый ноутбук с ядром на архитектуре RISC-V](https://habr.com/en/companies/selectel/articles/691252/). Эта история получила продолжение: в июне 2024 года открылся предзаказ на [вторую версию](https://www.cnews.ru/news/top/2024-06-14_sozdan_supermoshchnyj_noutbuk). Множество компаний высказываются в поддержку и проводят инвестиционные программы, например:
 - [RISC-V дизайн-центр в Барселоне от Intel](https://www.eenewseurope.com/en/400m-risc-v-design-centre-for-barcelona);
-- [Qualcomm разработает решение на RISC-V для умных часов от Google](https://riscv.org/news/2023/10/qualcomm-to-bring-risc-v-based-wearable-platform-to-wear-os-by-google/);
+- [Qualcomm разработает решение на RISC-V для умных часов от Google](https://riscv.org/blog/qualcomm-to-bring-risc-v-based-wearable-platform-to-wear-os-by-google/);
 - [Крупнейшая российская компания в сфере систем хранения данных Yadro "переключилась" на архитектуру RISC-V](https://3dnews.ru/1088875/yadro-ushlo-ot-ibm-i-prishlo-k-risc-v).
 
 Представленные выше факты способствуют **созданию ядер на архитектуре RISC-V, в том числе с открытым исходным кодом**. Сообщество активно делится опытом и исследует различные подходы к оптимизации для увеличения производительности, уменьшения площади и энергопотребления кристаллов ядер.

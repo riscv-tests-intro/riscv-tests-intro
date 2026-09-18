@@ -32,7 +32,7 @@
 
 ## Интерфейс RVFI
 
-Интерфейс [RVFI](https://github.com/SymbioticEDA/riscv-formal/blob/master/docs/rvfi.md) изначально был разработан компанией Symbiotic EDA с целью продвижения [формального подхода к верификации RISC-V ядер](https://riscv.org/wp-content/uploads/2018/12/13.30-Humbenberger-Wolf-Formal-Verification-of-RISC-V-processor-implementations.pdf). Интерфейс содержит набор сигналов, отражающих:
+Интерфейс [RVFI](https://github.com/SymbioticEDA/riscv-formal/blob/master/docs/rvfi.md) изначально был разработан компанией Symbiotic EDA с целью продвижения [формального подхода к верификации RISC-V ядер](https://disk.yandex.ru/i/ED0LSIX1T86lSQ). Интерфейс содержит набор сигналов, отражающих:
 
 - информацию о счетчике команд;
 - информацию о выполняемых инструкциях;
