@@ -1814,7 +1814,7 @@ gedit out/riscv-tests/rv32ui-p-ma_data.log
 
 Действительно, тест завершился по истечении времени.
 
-Откроем соответствующий файл тестовых сценариев [`riscv-tests/isa/rv32ui/ma_data.S`](https://github.com/riscv-software-src/riscv-tests/tree/408e461da11e0b298c4b69e587729532787212f5/isa/rv32ui/ma_data.S):
+Откроем соответствующий файл тестовых сценариев [`riscv-tests/isa/rv64ui/ma_data.S`](https://github.com/riscv-software-src/riscv-tests/tree/408e461da11e0b298c4b69e587729532787212f5/isa/rv64ui/ma_data.S):
 
 ```assembly
 ...
